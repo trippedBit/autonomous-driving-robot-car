@@ -22,8 +22,8 @@ This project aims to transform an existing car chassis into an autonomous drivin
 ## Getting Started
 
 1. Clone the repository.
-2. Get all needed parts.
-3. Build the robot car.
+2. Get all needed parts. Please refer to the [BOM](BOM/BOM.md).
+3. Build the robot car. Please refer to the [assembly information](assembly_information/assembly_information.md).
 4. Compile the ino-file and flash it.
 5. Enjoy.
 
