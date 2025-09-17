@@ -14,10 +14,10 @@ FetchContent_MakeAvailable(Catch2)
 
 add_executable(tests
   # first source files to test
-  src/0_dummy.cpp
+  src/chassis_motor.cpp
 
   # now the test files
-  tests/0_dummy.cpp
+  tests/chassis_motor.cpp
 )
 
 # Coverage flags
@@ -31,7 +31,7 @@ add_custom_target(coverage
   COMMAND ${CMAKE_MAKE_PROGRAM} tests
   COMMAND ./tests
   COMMAND gcov -c
-    ./CMakeFiles/tests.dir/src/0_dummy.cpp.obj
+    ./CMakeFiles/tests.dir/src/chassis_motor.cpp.obj
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   COMMENT "Running tests and generating coverage report"
 )
