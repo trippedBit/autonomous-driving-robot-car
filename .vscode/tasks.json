@@ -4,6 +4,21 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "Clean tests build directory",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "-E",
+                "rm",
+                "-rf",
+                "${workspaceFolder}/build/CMakeFiles/tests.dir/src",
+            ],
+            "problemMatcher": [],
+            "presentation": {
+                "clear": true
+            }
+        },
+        {
             "label": "Build tests",
             "type": "process",
             "command": "cmake",
@@ -81,6 +96,7 @@
             "command": "start coverage/coverage.html",
             "dependsOrder": "sequence",
             "dependsOn": [
+                "Clean tests build directory",
                 "Run tests with coverage",
                 "Update coverage report"
             ],

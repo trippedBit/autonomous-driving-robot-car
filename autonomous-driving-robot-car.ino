@@ -1,5 +1,7 @@
 #include <Arduino.h>
 
+#include "src/configuration.h"
+
 void setup()
 {
     Serial.begin(115200);
