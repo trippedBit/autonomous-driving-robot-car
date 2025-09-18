@@ -3,6 +3,9 @@
 #include "src/configuration.h"
 #include "src/chassis_motor.h"
 
+// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/20
+const char *VERSION = "0.1.0";
+
 ChassisMotor leftMotor(ENA_PIN,
                        FORWARD1_PIN,
                        BACKWARD1_PIN);
@@ -15,6 +18,8 @@ void setup()
     Serial.begin(115200);
 
     Serial.println("Hello, Autonomous Driving Robot Car!");
+    Serial.print("Software Version: ");
+    Serial.println(VERSION);
 
     delay(10000);
 }
