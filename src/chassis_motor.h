@@ -24,6 +24,7 @@ public:
     ChassisMotor(int enablePin,
                  int forwardPin,
                  int backwardPin);
+    // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/15
     int setMovementDirection(MovementDirection direction);
 };
 

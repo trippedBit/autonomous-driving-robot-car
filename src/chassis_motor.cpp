@@ -18,14 +18,24 @@ ChassisMotor::ChassisMotor(int enablePin,
 #endif                               // UNIT_TESTING
 }
 
+// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/15
 int ChassisMotor::setMovementDirection(MovementDirection direction)
 {
     int returnValue = -1; // Default to error
+
+#ifndef UNIT_TESTING
+    Serial.print("Setting pins ");
+    Serial.print(_forwardPin);
+    Serial.print(" / ");
+    Serial.print(_backwardPin);
+    Serial.print(" to ");
+#endif // UNIT_TESTING
 
     switch (direction)
     {
     case STOP:
 #ifndef UNIT_TESTING
+        Serial.println("LOW / LOW");
         digitalWrite(_forwardPin, LOW);
         digitalWrite(_backwardPin, LOW);
 #endif // UNIT_TESTING
@@ -33,6 +43,7 @@ int ChassisMotor::setMovementDirection(MovementDirection direction)
         break;
     case FORWARD:
 #ifndef UNIT_TESTING
+        Serial.println("HIGH / LOW");
         digitalWrite(_forwardPin, HIGH);
         digitalWrite(_backwardPin, LOW);
 #endif // UNIT_TESTING
@@ -40,6 +51,7 @@ int ChassisMotor::setMovementDirection(MovementDirection direction)
         break;
     case BACKWARD:
 #ifndef UNIT_TESTING
+        Serial.println("LOW / HIGH");
         digitalWrite(_forwardPin, LOW);
         digitalWrite(_backwardPin, HIGH);
 #endif // UNIT_TESTING
@@ -48,6 +60,7 @@ int ChassisMotor::setMovementDirection(MovementDirection direction)
     default:
 // Invalid direction, stop the motor as a safety measure
 #ifndef UNIT_TESTING
+        Serial.println("LOW / LOW (invalid direction)");
         digitalWrite(_forwardPin, LOW);
         digitalWrite(_backwardPin, LOW);
 #endif // UNIT_TESTING
