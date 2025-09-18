@@ -23,7 +23,7 @@ void loop()
 {
     // Just a demo sequence to test the motors - not related to any requirements
     analogWrite(ENA_PIN, 110);
-    analogWrite(ENB_PIN, 110);
+    analogWrite(ENB_PIN, 150);
 
     leftMotor.setMovementDirection(ChassisMotor::FORWARD);
     delay(5000);
