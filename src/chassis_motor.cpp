@@ -18,6 +18,46 @@ ChassisMotor::ChassisMotor(int enablePin,
 #endif                               // UNIT_TESTING
 }
 
+// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/18
+int ChassisMotor::getEnablePinAnalogValue()
+{
+#ifndef UNIT_TESTING
+    return analogRead(_enablePin);
+#else
+    return 0;
+#endif
+}
+
+// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/18
+int ChassisMotor::getDirectionPinState(ControlPin pin)
+{
+    int pinState = -1; // Default to error
+
+    int pinToCheck = -1; // Invalid pin
+    switch (pin)
+    {
+    case FORWARD:
+        pinToCheck = _forwardPin;
+        break;
+    case BACKWARD:
+        pinToCheck = _backwardPin;
+        break;
+    default:
+        break;
+    }
+
+    if (pinToCheck != -1)
+    {
+#ifndef UNIT_TESTING
+        pinState = digitalRead(pinToCheck);
+#else
+        pinState = 0; // Simulate LOW in unit testing mode
+#endif // UNIT_TESTING
+    }
+
+    return pinState;
+}
+
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/15
 int ChassisMotor::setMovementDirection(MovementDirection direction)
 {

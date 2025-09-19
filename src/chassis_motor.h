@@ -15,6 +15,12 @@ private:
     int _backwardPin;
 
 public:
+    enum ControlPin
+    {
+        ENABLE_PIN = 0,
+        FORWARD_PIN = 1,
+        BACKWARD_PIN = 2
+    };
     enum MovementDirection
     {
         STOP = 0,
@@ -24,6 +30,11 @@ public:
     ChassisMotor(int enablePin,
                  int forwardPin,
                  int backwardPin);
+
+    // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/18
+    int getDirectionPinState(ControlPin pin);
+    // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/18
+    int getEnablePinAnalogValue();
     // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/15
     int setMovementDirection(MovementDirection direction);
 };
