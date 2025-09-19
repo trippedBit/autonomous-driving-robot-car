@@ -2,6 +2,7 @@
 
 #include "src/configuration.h"
 #include "src/chassis_motor.h"
+#include "src/self_check.h"
 
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/20
 const char *VERSION = "0.1.0";
@@ -15,6 +16,9 @@ ChassisMotor rightMotor(ENB_PIN,
 
 void setup()
 {
+    // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/19
+    selfCheck();
+
     Serial.begin(115200);
 
     Serial.println("Hello, Autonomous Driving Robot Car!");
