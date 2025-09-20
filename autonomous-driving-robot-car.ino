@@ -32,7 +32,12 @@ void setup()
     {
         SELF_CHECK_PASSED = true;
         Serial.println("Self check passed.");
-        delay(10000);
+
+        // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/13
+        int additionalDelay = 10000 - millis();
+        Serial.print("Additional delay before switching to loop(): ");
+        Serial.println(additionalDelay);
+        delay(additionalDelay);
     }
     else
     {
