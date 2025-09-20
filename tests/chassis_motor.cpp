@@ -50,3 +50,24 @@ TEST_CASE("Chassis motor default pin configuration", "[chassis_motor]")
     REQUIRE(FORWARD2_PIN == 16);
     REQUIRE(BACKWARD2_PIN == 17);
 }
+
+// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/18
+TEST_CASE("Chassis motor enable pin analog value", "[chassis_motor]")
+{
+    ChassisMotor motor(5, 6, 7);
+    REQUIRE(motor.getEnablePinAnalogValue() == 0);
+}
+
+// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/18
+TEST_CASE("Chassis motor direction pin state", "[chassis_motor]")
+{
+    ChassisMotor motor(5, 6, 7);
+    int pinState = motor.getDirectionPinState(ChassisMotor::BACKWARD_PIN);
+    REQUIRE(pinState == 0);
+
+    pinState = motor.getDirectionPinState(ChassisMotor::FORWARD_PIN);
+    REQUIRE(pinState == 0);
+
+    pinState = motor.getDirectionPinState(static_cast<ChassisMotor::ControlPin>(999));
+    REQUIRE(pinState == -1);
+}
