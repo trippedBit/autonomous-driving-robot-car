@@ -14,6 +14,9 @@ bool selfCheck(ChassisMotor leftMotor,
         leftMotor.getDirectionPinState(ChassisMotor::FORWARD_PIN) == 0 &&
         leftMotor.getDirectionPinState(ChassisMotor::BACKWARD_PIN) == 0)
     {
+#ifndef UNIT_TESTING
+        Serial.println("Left motor check passed");
+#endif // UNIT_TESTING
         leftMotorCheck = true;
     }
 
@@ -22,15 +25,24 @@ bool selfCheck(ChassisMotor leftMotor,
         rightMotor.getDirectionPinState(ChassisMotor::FORWARD_PIN) == 0 &&
         rightMotor.getDirectionPinState(ChassisMotor::BACKWARD_PIN) == 0)
     {
+#ifndef UNIT_TESTING
+        Serial.println("Right motor check passed");
+#endif // UNIT_TESTING
         rightMotorCheck = true;
     }
 
     if (unittestForceFailLeftMotor)
     {
+#ifndef UNIT_TESTING
+        Serial.println("Forcing left motor check fail");
+#endif // UNIT_TESTING
         leftMotorCheck = false;
     }
     else if (unittestForceFailRightMotor)
     {
+#ifndef UNIT_TESTING
+        Serial.println("Forcing right motor check fail");
+#endif // UNIT_TESTING
         rightMotorCheck = false;
     }
 
