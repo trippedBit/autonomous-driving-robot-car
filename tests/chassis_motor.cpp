@@ -1,5 +1,6 @@
 #include "../build/_deps/catch2-src/src/catch2/catch_test_macros.hpp"
 
+#include "../src/configuration.h"
 #include "../src/chassis_motor.h"
 
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/15
@@ -70,4 +71,12 @@ TEST_CASE("Chassis motor direction pin state", "[chassis_motor]")
 
     pinState = motor.getDirectionPinState(static_cast<ChassisMotor::ControlPin>(999));
     REQUIRE(pinState == -1);
+}
+
+// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/17
+TEST_CASE("Chassis motor velocities", "[chassis_motor]")
+{
+    REQUIRE(VELOCITY_MIN == 150);
+    REQUIRE(VELOCITY_MID == 200);
+    REQUIRE(VELOCITY_MAX == 250);
 }
