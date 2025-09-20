@@ -2,6 +2,7 @@
 
 #include "src/configuration.h"
 #include "src/chassis_motor.h"
+#include "src/motor_control.h"
 #include "src/self_check.h"
 
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/20
@@ -9,6 +10,9 @@ const char *VERSION = "0.1.0";
 
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/18
 bool SELF_CHECK_PASSED = false;
+
+// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/14
+int timeDirectionMovement = 2000;
 
 ChassisMotor leftMotor(ENA_PIN,
                        FORWARD1_PIN,
@@ -24,6 +28,9 @@ void setup()
     Serial.println("Hello, Autonomous Driving Robot Car!");
     Serial.print("Software Version: ");
     Serial.println(VERSION);
+
+    // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/14
+    randomSeed(analogRead(RANDOM_PIN));
 
     // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/18
     // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/19
@@ -53,28 +60,21 @@ void loop()
 {
     if (SELF_CHECK_PASSED) // Execute loop only if self check passed
     {
-        // Just a demo sequence to test the motors - not related to any requirements
-        analogWrite(ENA_PIN, 110);
-        analogWrite(ENB_PIN, 150);
+        // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/14
+        int direction = random(-180,
+                               180);
+        Serial.print("Random direction: ");
+        Serial.println(direction);
+        int velocityPWM = random(VELOCITY_MIN,
+                                 VELOCITY_MAX);
+        Serial.print("Random velocity (PWM): ");
+        Serial.println(velocityPWM);
 
-        leftMotor.setMovementDirection(ChassisMotor::FORWARD);
-        delay(5000);
-        leftMotor.setMovementDirection(ChassisMotor::STOP);
-        delay(5000);
-        leftMotor.setMovementDirection(ChassisMotor::BACKWARD);
-        delay(5000);
-        leftMotor.setMovementDirection(ChassisMotor::STOP);
+        applyRandomDirectionAndSpeed(leftMotor,
+                                     rightMotor,
+                                     direction,
+                                     velocityPWM);
 
-        delay(5000);
-
-        rightMotor.setMovementDirection(ChassisMotor::FORWARD);
-        delay(5000);
-        rightMotor.setMovementDirection(ChassisMotor::STOP);
-        delay(5000);
-        rightMotor.setMovementDirection(ChassisMotor::BACKWARD);
-        delay(5000);
-        rightMotor.setMovementDirection(ChassisMotor::STOP);
-
-        delay(5000);
+        delay(timeDirectionMovement);
     }
 }
