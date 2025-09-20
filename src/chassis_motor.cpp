@@ -110,3 +110,11 @@ int ChassisMotor::setMovementDirection(MovementDirection direction)
 
     return returnValue;
 }
+
+// Requirement: None
+void ChassisMotor::setVelocityPWM(int velocityPWM)
+{
+#ifndef UNIT_TESTING
+    analogWrite(_enablePin, velocityPWM);
+#endif // UNIT_TESTING
+}
