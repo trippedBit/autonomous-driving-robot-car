@@ -3,7 +3,7 @@
 #include "../src/motor_control.h"
 
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/15
-TEST_CASE("Chassis motor can be created", "[motor_control]")
+TEST_CASE("Movement calculation is correct", "[motor_control]")
 {
     ChassisMotor leftMotor(1, 2, 3);
     ChassisMotor rightMotor(4, 5, 6);
