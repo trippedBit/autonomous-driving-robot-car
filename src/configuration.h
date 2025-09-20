@@ -1,6 +1,16 @@
 #ifndef CONFIGURATION_H
 #define CONFIGURATION_H
 
+#include <math.h>
+
+// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/14
+const int RANDOM_PIN = 35;               // GPIO35 used to create a random seed using a not-connected pin.
+const int WHEEL_DISTANCE_MM = 300;       // Distance between wheels in centimeters (= turn radius).
+const float WHEEL_RPM_VELOCITY_MIN = 20; // Measured RPM with VELOCITY_MIN; needs to be updated when VELOCITY_MIN is changed
+const float WHEEL_RPS_VELOCITY_MIN = WHEEL_RPM_VELOCITY_MIN / 60.0;
+const int WHEEL_DIAMETER_MM = 67; // Measured wheel diameter
+const float WHEEL_CIRCUMFERENCE_MM = M_PI * WHEEL_DIAMETER_MM;
+
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/15
 const int ENA_PIN = 0;        // IO0 / GPIO0 / PWM1 / ENA on L298N
 const int FORWARD1_PIN = 12;  // TDI / GPIO12 / IN1 on L298N
