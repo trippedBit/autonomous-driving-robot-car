@@ -5,6 +5,8 @@
 
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/19
 bool selfCheck(ChassisMotor leftMotor,
-               ChassisMotor rightMotor);
+               ChassisMotor rightMotor,
+               bool unittestForceFailLeftMotor = false,
+               bool unittestForceFailRightMotor = false);
 
 #endif // SELF_CHECK_H

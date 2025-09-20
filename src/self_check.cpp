@@ -3,7 +3,9 @@
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/18
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/19
 bool selfCheck(ChassisMotor leftMotor,
-               ChassisMotor rightMotor)
+               ChassisMotor rightMotor,
+               bool unittestForceFailLeftMotor,
+               bool unittestForceFailRightMotor)
 {
     // Perform self-check routines here
     // Return true if all checks pass, false otherwise
@@ -23,12 +25,15 @@ bool selfCheck(ChassisMotor leftMotor,
         rightMotorCheck = true;
     }
 
-    if (leftMotorCheck && rightMotorCheck)
+    if (unittestForceFailLeftMotor)
     {
-        return true;
+        leftMotorCheck = false;
     }
-    else
+    else if (unittestForceFailRightMotor)
     {
-        return false;
+        rightMotorCheck = false;
     }
+
+    return leftMotorCheck &&
+           rightMotorCheck;
 }
