@@ -10,6 +10,10 @@ std::string applyRandomDirectionAndSpeed(ChassisMotor leftMotor,
     leftMotor.setVelocityPWM(0);
     rightMotor.setVelocityPWM(0);
 
+#ifndef UNIT_TESTING
+    delay(5000);
+#endif // UNIT_TESTING
+
     // 2. perform turn
     // 2.1. if negative : left turn; if positive: right turn
     // 2.2. enable needed motor for x seconds (how to calculate?) with VELOCITY_MIN
@@ -68,6 +72,10 @@ std::string applyRandomDirectionAndSpeed(ChassisMotor leftMotor,
 #endif // UNIT_TESTING
         leftMotor.setVelocityPWM(0);
     }
+
+#ifndef UNIT_TESTING
+    delay(5000);
+#endif // UNIT_TESTING
 
 // 3. enable both motors mith new velocity
 #ifndef UNIT_TESTING
