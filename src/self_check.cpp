@@ -1,34 +1,61 @@
 #include "self_check.h"
 
-// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/18
+SelfCheck::SelfCheck()
+{
+    // nothing todo
+}
+
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/19
-bool selfCheck(ChassisMotor leftMotor,
-               ChassisMotor rightMotor,
-               bool unittestForceFailLeftMotor,
-               bool unittestForceFailRightMotor)
+// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/29
+bool SelfCheck::selfCheck(ChassisMotor leftMotor,
+                          ChassisMotor rightMotor,
+                          bool unittestForceFailLeftMotor,
+                          bool unittestForceFailRightMotor)
 {
     // Perform self-check routines here
     // Return true if all checks pass, false otherwise
-    bool leftMotorCheck = false;
-    if (leftMotor.getEnablePinAnalogValue() == 0 &&
-        leftMotor.getDirectionPinState(ChassisMotor::FORWARD_PIN) == 0 &&
-        leftMotor.getDirectionPinState(ChassisMotor::BACKWARD_PIN) == 0)
+    leftMotorCheck = false;
+    leftMotorForwardPinState = leftMotor.getDirectionPinState(ChassisMotor::FORWARD_PIN);
+    leftMotorBackwardPinState = leftMotor.getDirectionPinState(ChassisMotor::BACKWARD_PIN);
+    if (leftMotorForwardPinState == 0 &&
+        leftMotorBackwardPinState == 0)
     {
 #ifndef UNIT_TESTING
         Serial.println("Left motor check passed");
 #endif // UNIT_TESTING
         leftMotorCheck = true;
     }
+    else
+    {
+#ifndef UNIT_TESTING
+        Serial.println("Left motor check failed");
+        Serial.print("FORWARD_PIN state | BACKWARD_PIN state: ");
+        Serial.print(leftMotorForwardPinState);
+        Serial.print(" | ");
+        Serial.println(leftMotorBackwardPinState);
+#endif // UNIT_TESTING
+    }
 
     bool rightMotorCheck = false;
-    if (rightMotor.getEnablePinAnalogValue() == 0 &&
-        rightMotor.getDirectionPinState(ChassisMotor::FORWARD_PIN) == 0 &&
-        rightMotor.getDirectionPinState(ChassisMotor::BACKWARD_PIN) == 0)
+    rightMotorForwardPinState = rightMotor.getDirectionPinState(ChassisMotor::FORWARD_PIN);
+    rightMotorBackwardPinState = rightMotor.getDirectionPinState(ChassisMotor::BACKWARD_PIN);
+    if (rightMotorForwardPinState == 0 &&
+        rightMotorBackwardPinState == 0)
     {
 #ifndef UNIT_TESTING
         Serial.println("Right motor check passed");
 #endif // UNIT_TESTING
         rightMotorCheck = true;
+    }
+    else
+    {
+#ifndef UNIT_TESTING
+        Serial.println("Right motor check failed");
+        Serial.print("FORWARD_PIN state | BACKWARD_PIN state: ");
+        Serial.print(rightMotorForwardPinState);
+        Serial.print(" | ");
+        Serial.println(rightMotorBackwardPinState);
+#endif // UNIT_TESTING
     }
 
     if (unittestForceFailLeftMotor)
@@ -46,6 +73,6 @@ bool selfCheck(ChassisMotor leftMotor,
         rightMotorCheck = false;
     }
 
-    return leftMotorCheck &&
-           rightMotorCheck;
+    return SELF_CHECK_PASSED = leftMotorCheck &&
+                               rightMotorCheck;
 }
