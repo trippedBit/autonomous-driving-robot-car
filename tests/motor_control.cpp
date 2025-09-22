@@ -3,7 +3,7 @@
 #include "../src/motor_control.h"
 
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/15
-TEST_CASE("Movement calculation is correct", "[motor_control]")
+TEST_CASE("Movement calculation for right turn is correct", "[motor_control]")
 {
     ChassisMotor leftMotor(1, 2, 3);
     ChassisMotor rightMotor(4, 5, 6);
@@ -11,6 +11,19 @@ TEST_CASE("Movement calculation is correct", "[motor_control]")
     std::string returnValue = applyRandomDirectionAndSpeed(leftMotor,
                                                            rightMotor,
                                                            25,
+                                                           0);
+    REQUIRE(returnValue == "radians [rad]: 0.436332 | distanceMM [mm]: 130.899689 | circumference [MM]: 210.486710 | revolutions per second [rps]: 0.333333 | velocity [mm/s]: 70.162239 | activeMilliSeconds [ms]: 1865.671509");
+}
+
+// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/15
+TEST_CASE("Movement calculation for left turn is correct", "[motor_control]")
+{
+    ChassisMotor leftMotor(1, 2, 3);
+    ChassisMotor rightMotor(4, 5, 6);
+
+    std::string returnValue = applyRandomDirectionAndSpeed(leftMotor,
+                                                           rightMotor,
+                                                           -25,
                                                            0);
     REQUIRE(returnValue == "radians [rad]: 0.436332 | distanceMM [mm]: 130.899689 | circumference [MM]: 210.486710 | revolutions per second [rps]: 0.333333 | velocity [mm/s]: 70.162239 | activeMilliSeconds [ms]: 1865.671509");
 }

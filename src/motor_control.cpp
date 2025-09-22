@@ -14,7 +14,7 @@ std::string applyRandomDirectionAndSpeed(ChassisMotor leftMotor,
     // 2.1. if negative : left turn; if positive: right turn
     // 2.2. enable needed motor for x seconds (how to calculate?) with VELOCITY_MIN
     // 2.3. stop needed motor
-    float radians = M_PI / 180 * directionAngle;
+    float radians = abs(M_PI / 180 * directionAngle);
 #ifndef UNIT_TESTING
     Serial.print("Calculated radians: ");
     Serial.println(radians);
