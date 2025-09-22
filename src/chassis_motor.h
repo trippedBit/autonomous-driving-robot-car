@@ -37,6 +37,8 @@ public:
     int getEnablePinAnalogValue();
     // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/15
     int setMovementDirection(MovementDirection direction);
+    // Requirement: None
+    void setVelocityPWM(int velocityPWM);
 };
 
 #endif // CHASSIS_MOTOR_H

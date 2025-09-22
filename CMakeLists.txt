@@ -15,10 +15,12 @@ FetchContent_MakeAvailable(Catch2)
 add_executable(tests
   # first source files to test
   src/chassis_motor.cpp
+  src/motor_control.cpp
   src/self_check.cpp
 
   # now the test files
   tests/chassis_motor.cpp
+  tests/motor_control.cpp
   tests/self_check.cpp
 )
 
@@ -34,6 +36,7 @@ add_custom_target(coverage
   COMMAND ./tests
   COMMAND gcov -c
     ./CMakeFiles/tests.dir/src/chassis_motor.cpp.obj
+    ./CMakeFiles/tests.dir/src/motor_control.cpp.obj
     ./CMakeFiles/tests.dir/src/self_check.cpp.obj
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   COMMENT "Running tests and generating coverage report"
