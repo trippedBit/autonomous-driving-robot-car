@@ -5,11 +5,10 @@
 #include "src/motor_control.h"
 #include "src/self_check.h"
 
+const int LED = 2;
+
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/20
 const char *VERSION = "0.1.0";
-
-// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/18
-bool SELF_CHECK_PASSED = false;
 
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/14
 int timeDirectionMovement = 2000;
@@ -21,8 +20,12 @@ ChassisMotor rightMotor(ENB_PIN,
                         FORWARD2_PIN,
                         BACKWARD2_PIN);
 
+SelfCheck selfCheck;
+
 void setup()
 {
+    pinMode(LED, OUTPUT);
+
     Serial.begin(115200);
 
     Serial.println("Hello, Autonomous Driving Robot Car!");
@@ -32,33 +35,60 @@ void setup()
     // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/14
     randomSeed(analogRead(RANDOM_PIN));
 
-    // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/18
-    // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/19
-    if (selfCheck(leftMotor,
-                  rightMotor))
+    // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/13
+    while (millis() < 10000)
     {
-        SELF_CHECK_PASSED = true;
-        Serial.println("Self check passed.");
+        // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/19
+        // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/29
+        if (!selfCheck.SELF_CHECK_PASSED)
+        {
+            selfCheck.selfCheck(leftMotor,
+                                rightMotor);
 
-        // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/13
-        int additionalDelay = 10000 - millis();
-        Serial.print("Additional delay before switching to loop(): ");
-        Serial.println(additionalDelay);
-        delay(additionalDelay);
+            Serial.print("Left motor states: ");
+            Serial.print(selfCheck.leftMotorForwardPinState);
+            Serial.print(" | ");
+            Serial.println(selfCheck.leftMotorBackwardPinState);
+
+            Serial.print("Right motor states: ");
+            Serial.print(selfCheck.rightMotorForwardPinState);
+            Serial.print(" | ");
+            Serial.println(selfCheck.rightMotorBackwardPinState);
+
+            delay(500); // Next check in 500ms
+        }
+        else
+        {
+            // Check passed, just wait until 10s are over.
+            int additionalDelay = 10000 - millis();
+            Serial.print("Additional delay before switching to loop(): ");
+            Serial.println(additionalDelay);
+            delay(additionalDelay);
+        }
+    }
+
+    if (!selfCheck.SELF_CHECK_PASSED)
+    {
+        Serial.println("Startup phase over and self check failed");
+        while (true)
+        {
+            digitalWrite(LED, HIGH);
+            delay(500);
+            digitalWrite(LED, LOW);
+            delay(500);
+        }
     }
     else
     {
-        while (true)
-        {
-            Serial.println("Self check failed!");
-            delay(5000);
-        }
+        Serial.println("Startup phase over, check passed, enabling motors");
+        leftMotor.setMovementDirection(ChassisMotor::FORWARD);
+        rightMotor.setMovementDirection(ChassisMotor::FORWARD);
     }
 }
 
 void loop()
 {
-    if (SELF_CHECK_PASSED) // Execute loop only if self check passed
+    if (selfCheck.SELF_CHECK_PASSED) // Execute loop only if self check passed
     {
         // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/14
         int direction = random(-180,
