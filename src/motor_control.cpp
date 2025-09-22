@@ -40,7 +40,13 @@ std::string applyRandomDirectionAndSpeed(ChassisMotor leftMotor,
 
     if (directionAngle < 0)
     {
-        // left turn, right motor needed
+// left turn, right motor needed
+#ifndef UNIT_TESTING
+        Serial.print("Activating right motor for milliseconds with PWM: ");
+        Serial.print(activeMilliSeconds);
+        Serial.print(" | ");
+        Serial.println(VELOCITY_MIN);
+#endif // UNIT_TESTING
         rightMotor.setVelocityPWM(VELOCITY_MIN);
 #ifndef UNIT_TESTING
         delay(activeMilliSeconds);
@@ -49,7 +55,13 @@ std::string applyRandomDirectionAndSpeed(ChassisMotor leftMotor,
     }
     else
     {
-        // right turn, left motor needed
+// right turn, left motor needed
+#ifndef UNIT_TESTING
+        Serial.print("Activating left motor for milliseconds with PWM: ");
+        Serial.print(activeMilliSeconds);
+        Serial.print(" | ");
+        Serial.println(VELOCITY_MIN);
+#endif // UNIT_TESTING
         leftMotor.setVelocityPWM(VELOCITY_MIN);
 #ifndef UNIT_TESTING
         delay(activeMilliSeconds);
@@ -57,7 +69,11 @@ std::string applyRandomDirectionAndSpeed(ChassisMotor leftMotor,
         leftMotor.setVelocityPWM(0);
     }
 
-    // 3. enable both motors mith new velocity
+// 3. enable both motors mith new velocity
+#ifndef UNIT_TESTING
+    Serial.print("Activating both motors with PWM: ");
+    Serial.println(VELOCITY_MIN);
+#endif // UNIT_TESTING
     leftMotor.setVelocityPWM(velocityPWM);
     rightMotor.setVelocityPWM(velocityPWM);
 
