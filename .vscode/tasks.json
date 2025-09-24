@@ -133,7 +133,7 @@
             "label": "Upload to ESP32",
             "type": "shell",
             "options": {
-                "cwd": "${fileDirname}"
+                "cwd": "${workspaceFolder}"
             },
             "command": "arduino-cli",
             "args": [
