@@ -175,7 +175,7 @@ bool OTA::downloadAndUpdate(std::string expectedMD5)
     size_t written = Update.writeStream(*stream);
     if (written == len && Update.end())
     {
-      if (Update.md5String() == expectedMD5.c_str())
+      if (Update.md5String() == expectedMD5.c_str()) // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/40
       {
         Serial.println("OTA update successful and MD5 verified. Rebooting...");
         http.end();
@@ -210,42 +210,49 @@ bool OTA::downloadAndUpdate(std::string expectedMD5)
 void OTA::begin(const char *currentVersion)
 {
 #ifndef UNIT_TESTING
-  Serial.println("Starting OTA update process");
-  if (_otaUrl.length() > 0 && _md5Url.length() > 0 && _availableVersionUrl.length() > 0)
+  if (!LOOP_FUNCTION_ENTERED) // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/39
   {
-    std::string availableVersion = downloadAvailableVersion();
-    Serial.print("Current version / available version: ");
-    Serial.print(currentVersion);
-    Serial.print(" / ");
-    Serial.println(availableVersion.c_str());
-
-    if (currentVersion != availableVersion)
+    Serial.println("Starting OTA update process");
+    if (_otaUrl.length() > 0 && _md5Url.length() > 0 && _availableVersionUrl.length() > 0)
     {
-      std::string md5 = downloadMD5();
-      if (md5.length() == 32)
+      std::string availableVersion = downloadAvailableVersion();
+      Serial.print("Current version / available version: ");
+      Serial.print(currentVersion);
+      Serial.print(" / ");
+      Serial.println(availableVersion.c_str());
+
+      if (currentVersion != availableVersion)
       {
-        if (downloadAndUpdate(md5))
+        std::string md5 = downloadMD5();
+        if (md5.length() == 32)
         {
-          ESP.restart();
+          if (downloadAndUpdate(md5))
+          {
+            ESP.restart();
+          }
+          else
+          {
+            Serial.println("An error occured during update execution.");
+          }
         }
         else
         {
-          Serial.println("An error occured during update execution.");
+          Serial.println("Invalid or missing MD5 hash. OTA update aborted.");
         }
       }
       else
       {
-        Serial.println("Invalid or missing MD5 hash. OTA update aborted.");
+        Serial.println("No new version available, skipping OTA update.");
       }
     }
     else
     {
-      Serial.println("No new version available, skipping OTA update.");
+      Serial.println("OTA URL or MD5 URL or Version URL not set. OTA update aborted.");
     }
   }
   else
   {
-    Serial.println("OTA URL or MD5 URL or Version URL not set. OTA update aborted.");
+    Serial.println("Loop function entered, skipping OTA update.");
   }
 #endif // UNIT_TESTING
 }

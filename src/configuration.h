@@ -5,6 +5,8 @@
 #include <math.h>
 #include <string>
 
+extern bool LOOP_FUNCTION_ENTERED; // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/39
+
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/38
 #ifndef OTA_FIRMWARE_URL_MACRO
 #define OTA_FIRMWARE_URL_MACRO "not set";
@@ -48,8 +50,8 @@
 #endif // __has_include
 #endif // __has_include
 
-const std::string OTA_FIRMWARE_URL = OTA_FIRMWARE_URL_MACRO;
-const std::string OTA_FIRMWARE_MD5_URL = OTA_FIRMWARE_MD5_URL_MACRO;
+const std::string OTA_FIRMWARE_URL = OTA_FIRMWARE_URL_MACRO;         // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/40
+const std::string OTA_FIRMWARE_MD5_URL = OTA_FIRMWARE_MD5_URL_MACRO; // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/40
 const std::string OTA_FIRMWARE_VERSION_URL = OTA_FIRMWARE_VERSION_URL_MACRO;
 const std::string WIFI_NAME = WIFI_NAME_MACRO;
 const std::string WIFI_PASSWORD = WIFI_PASSWORD_MACRO;

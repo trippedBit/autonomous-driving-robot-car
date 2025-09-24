@@ -9,6 +9,7 @@
 
 #include "src/VERSION.h"
 
+bool LOOP_FUNCTION_ENTERED = true; // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/39
 const int LED = 2;
 
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/14
@@ -80,6 +81,7 @@ void setup()
             wifiWrapper.connectWiFi();
 
             // Now perform OTA update if available.
+            LOOP_FUNCTION_ENTERED = false; // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/39
             ota.begin(VERSION);
 
             // Just wait until 10s are over.
@@ -114,6 +116,11 @@ void setup()
 
 void loop()
 {
+    if (!LOOP_FUNCTION_ENTERED) // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/39
+    {
+        LOOP_FUNCTION_ENTERED = true;
+    }
+
     if (selfCheck.SELF_CHECK_PASSED) // Execute loop only if self check passed
     {
         // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/14

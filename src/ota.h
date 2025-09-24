@@ -8,6 +8,8 @@
 #include <WiFiClient.h>
 #endif // UNIT_TESTING
 
+#include "configuration.h"
+
 class OTA
 {
 private:
