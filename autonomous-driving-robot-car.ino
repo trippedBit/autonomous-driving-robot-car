@@ -4,6 +4,8 @@
 #include "src/chassis_motor.h"
 #include "src/motor_control.h"
 #include "src/self_check.h"
+// #include "src/ota.h"
+#include "src/wifi_wrapper.h"
 
 const int LED = 2;
 
@@ -22,6 +24,16 @@ ChassisMotor rightMotor(ENB_PIN,
 
 SelfCheck selfCheck;
 
+WiFiWrapper wifiWrapper(WIFI_NAME,
+                        WIFI_PASSWORD,
+                        WIFI_IP,
+                        WIFI_DNS,
+                        WIFI_GATEWAY,
+                        WIFI_SUBNET);
+
+/* OTA ota(OTA_FIRMWARE_URL,
+        OTA_FIRMWARE_MD5_URL); */
+
 void setup()
 {
     pinMode(LED, OUTPUT);
@@ -31,6 +43,10 @@ void setup()
     Serial.println("Hello, Autonomous Driving Robot Car!");
     Serial.print("Software Version: ");
     Serial.println(VERSION);
+
+    Serial.println("OTA URLs (firmware / MD5):");
+    Serial.println(OTA_FIRMWARE_URL.c_str());
+    Serial.println(OTA_FIRMWARE_MD5_URL.c_str());
 
     // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/14
     randomSeed(analogRead(RANDOM_PIN));
@@ -59,7 +75,10 @@ void setup()
         }
         else
         {
-            // Check passed, just wait until 10s are over.
+            // Check passed, now connect to WiFi.
+            wifiWrapper.connectWiFi();
+
+            // Just wait until 10s are over.
             int additionalDelay = 10000 - millis();
             Serial.print("Additional delay before switching to loop(): ");
             Serial.println(additionalDelay);

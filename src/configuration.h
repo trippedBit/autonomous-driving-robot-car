@@ -1,16 +1,42 @@
 #ifndef CONFIGURATION_H
 #define CONFIGURATION_H
 
+#include <array>
 #include <math.h>
 #include <string>
 
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/38
 #ifndef OTA_FIRMWARE_URL_MACRO
 #define OTA_FIRMWARE_URL_MACRO "not set";
-#endif // OTA_FIRMWARE_URL
+#endif // OTA_FIRMWARE_URL_MACRO
+
 #ifndef OTA_FIRMWARE_MD5_URL_MACRO
 #define OTA_FIRMWARE_MD5_URL_MACRO "not set";
-#endif // OTA_FIRMWARE_MD5_URL
+#endif // OTA_FIRMWARE_MD5_URL_MACRO
+
+#ifndef WIFI_NAME_MACRO
+#define WIFI_NAME_MACRO "not set";
+#endif // WIFI_NAME_MACRO
+
+#ifndef WIFI_PASSWORD_MACRO
+#define WIFI_PASSWORD_MACRO "not set";
+#endif // WIFI_PASSWORD_MACRO
+
+#ifndef WIFI_IP_MACRO
+#define WIFI_IP_MACRO {0, 0, 0, 0};
+#endif // WIFI_IP_MACRO
+
+#ifndef WIFI_DNS_MACRO
+#define WIFI_DNS_MACRO {0, 0, 0, 0};
+#endif // WIFI_DNS_MACRO
+
+#ifndef WIFI_GATEWAY_MACRO
+#define WIFI_GATEWAY_MACRO {0, 0, 0, 0};
+#endif // WIFI_GATEWAY_MACRO
+
+#ifndef WIFI_SUBNET_MACRO
+#define WIFI_SUBNET_MACRO {0, 0, 0, 0};
+#endif // WIFI_SUBNET_MACRO
 
 #ifdef __has_include
 #if __has_include("user_configuration.h")
@@ -20,6 +46,12 @@
 
 const std::string OTA_FIRMWARE_URL = OTA_FIRMWARE_URL_MACRO;
 const std::string OTA_FIRMWARE_MD5_URL = OTA_FIRMWARE_MD5_URL_MACRO;
+const std::string WIFI_NAME = WIFI_NAME_MACRO;
+const std::string WIFI_PASSWORD = WIFI_PASSWORD_MACRO;
+const std::array<int, 4> WIFI_IP = WIFI_IP_MACRO;
+const std::array<int, 4> WIFI_DNS = WIFI_DNS_MACRO;
+const std::array<int, 4> WIFI_GATEWAY = WIFI_GATEWAY_MACRO;
+const std::array<int, 4> WIFI_SUBNET = WIFI_SUBNET_MACRO;
 
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/14
 const int RANDOM_PIN = 35;               // GPIO35 used to create a random seed using a not-connected pin.
