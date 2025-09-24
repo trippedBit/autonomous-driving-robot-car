@@ -16,7 +16,9 @@ add_executable(tests
   # first source files to test
   src/chassis_motor.cpp
   src/motor_control.cpp
+  src/ota.cpp
   src/self_check.cpp
+  src/wifi_wrapper.cpp
 
   # now the test files
   tests/chassis_motor.cpp
