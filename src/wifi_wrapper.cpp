@@ -55,5 +55,7 @@ void WiFiWrapper::connectWiFi(void)
         Serial.println(subnet);
         delay(1000);
     }
+
+    Serial.println("WiFi connected.");
 #endif // UNIT_TESTING
 }
