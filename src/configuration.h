@@ -2,6 +2,24 @@
 #define CONFIGURATION_H
 
 #include <math.h>
+#include <string>
+
+// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/38
+#ifndef OTA_FIRMWARE_URL_MACRO
+#define OTA_FIRMWARE_URL_MACRO "not set";
+#endif // OTA_FIRMWARE_URL
+#ifndef OTA_FIRMWARE_MD5_URL_MACRO
+#define OTA_FIRMWARE_MD5_URL_MACRO "not set";
+#endif // OTA_FIRMWARE_MD5_URL
+
+#ifdef __has_include
+#if __has_include("user_configuration.h")
+#include "user_configuration.h"
+#endif // __has_include
+#endif // __has_include
+
+const std::string OTA_FIRMWARE_URL = OTA_FIRMWARE_URL_MACRO;
+const std::string OTA_FIRMWARE_MD5_URL = OTA_FIRMWARE_MD5_URL_MACRO;
 
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/14
 const int RANDOM_PIN = 35;               // GPIO35 used to create a random seed using a not-connected pin.
