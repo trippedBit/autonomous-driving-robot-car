@@ -13,4 +13,8 @@ std::string applyRandomDirectionAndSpeed(ChassisMotor leftMotor,
                                          int directionAngle,
                                          int velocityPWM);
 
+// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/32
+bool obstacleDetection(ChassisMotor leftMotor,
+                       ChassisMotor rightMotor);
+
 #endif // MOTOR_CONTROL_H

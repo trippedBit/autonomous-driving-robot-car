@@ -92,3 +92,37 @@ std::string applyRandomDirectionAndSpeed(ChassisMotor leftMotor,
            "velocity [mm/s]: " + std::to_string(velocityMMPS) + " | " +
            "activeMilliSeconds [ms]: " + std::to_string(activeMilliSeconds);
 }
+
+// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/32
+bool obstacleDetection(ChassisMotor leftMotor,
+                       ChassisMotor rightMotor)
+{
+#ifndef UNIT_TESTING
+    digitalWrite(SENSOR_TRIGGER_PIN, LOW); // Set pin low for a clean start when setting high
+    delayMicroseconds(SENSOR_TRIGGER_PIN_LOW_TIME_MICROSECONDS);
+    digitalWrite(SENSOR_TRIGGER_PIN, HIGH);                       // Start trigger
+    delayMicroseconds(SENSOR_TRIGGER_PIN_HIGH_TIME_MICROSECONDS); // Trigger must be high for at least 10 microseconds.
+    digitalWrite(SENSOR_TRIGGER_PIN, LOW);
+
+    // Get echo pulse
+    pinMode(SENSOR_ECHO_PIN, INPUT);
+    unsigned long pulseLengthMicroseconds = pulseIn(SENSOR_ECHO_PIN, HIGH);
+
+    // Convert to millimeters
+    unsigned long distanceMillimeter = (pulseLengthMicroseconds / 2) * SPEED_OF_SOUND_MILLIMETER_PER_MICROSECOND; // Divided by two because pulse needs to travel to obstacle and back.
+#endif                                                                                                            // UNIT_TESTING
+
+    // Stop motors in case of an obstacle
+    // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/32
+    if (distanceMillimeter < DISTANCE_THRESHOLD_MILLIMETER)
+    {
+#ifndef UNIT_TESTING
+        leftMotor.setVelocityPWM(0);
+        rightMotor.setVelocityPWM(0);
+#endif // UNIT_TESTING
+
+        return true;
+    }
+
+    return false;
+}
