@@ -15,12 +15,16 @@ FetchContent_MakeAvailable(Catch2)
 add_executable(tests
   # first source files to test
   src/chassis_motor.cpp
+  src/configuration.cpp
   src/motor_control.cpp
+  src/ota.cpp
   src/self_check.cpp
+  src/wifi_wrapper.cpp
 
   # now the test files
   tests/chassis_motor.cpp
   tests/motor_control.cpp
+  tests/ota.cpp
   tests/self_check.cpp
 )
 

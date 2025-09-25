@@ -133,7 +133,7 @@
             "label": "Upload to ESP32",
             "type": "shell",
             "options": {
-                "cwd": "${fileDirname}"
+                "cwd": "${workspaceFolder}"
             },
             "command": "arduino-cli",
             "args": [
@@ -149,12 +149,26 @@
             }
         },
         {
+            "label": "Copy VERSION.h",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "command": "cp ./src/VERSION.h ./build/esp32.esp32.esp32/VERSION.h",
+            "problemMatcher": [],
+            "presentation": {
+                "clear": true
+            }
+        },
+        {
             "label": "Compile and Upload for ESP32",
             "type": "shell",
             "command": "echo 'Compiling and uploading to ESP32 executed.'",
             "dependsOrder": "sequence",
             "dependsOn": [
                 "Compile for ESP32",
+                "Calculate firmware MD5",
+                "Copy VERSION.h",
                 "Upload to ESP32"
             ],
             "group": {
@@ -168,5 +182,33 @@
                 "clear": true
             }
         },
+        {
+            "label": "Calculate firmware MD5",
+            "type": "shell",
+            "command": "(Get-FileHash -Path ./build/esp32.esp32.esp32/*.ino.bin -Algorithm md5).Hash.ToLower() | Out-File -FilePath ./build/esp32.esp32.esp32/firmware.md5 -Encoding ASCII",
+            "problemMatcher": [],
+            "presentation": {
+                "clear": true
+            }
+        },
+        {
+            "label": "Compile and calculate MD5",
+            "type": "shell",
+            "command": "echo 'Compiling and calculating MD5 executed.'",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Compile for ESP32",
+                "Calculate firmware MD5",
+                "Copy VERSION.h"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "clear": true
+            }
+        }
     ]
 }

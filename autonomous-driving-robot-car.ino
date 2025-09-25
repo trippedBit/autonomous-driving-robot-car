@@ -4,11 +4,12 @@
 #include "src/chassis_motor.h"
 #include "src/motor_control.h"
 #include "src/self_check.h"
+#include "src/ota.h"
+#include "src/wifi_wrapper.h"
+
+#include "src/VERSION.h"
 
 const int LED = 2;
-
-// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/20
-const char *VERSION = "0.1.0";
 
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/14
 int timeDirectionMovement = 2000;
@@ -22,6 +23,17 @@ ChassisMotor rightMotor(ENB_PIN,
 
 SelfCheck selfCheck;
 
+WiFiWrapper wifiWrapper(WIFI_NAME,
+                        WIFI_PASSWORD,
+                        WIFI_IP,
+                        WIFI_DNS,
+                        WIFI_GATEWAY,
+                        WIFI_SUBNET);
+
+OTA ota(OTA_FIRMWARE_URL,
+        OTA_FIRMWARE_MD5_URL,
+        OTA_FIRMWARE_VERSION_URL);
+
 void setup()
 {
     pinMode(LED, OUTPUT);
@@ -31,6 +43,11 @@ void setup()
     Serial.println("Hello, Autonomous Driving Robot Car!");
     Serial.print("Software Version: ");
     Serial.println(VERSION);
+
+    Serial.println("OTA URLs (firmware / MD5 / version):");
+    Serial.println(OTA_FIRMWARE_URL.c_str());
+    Serial.println(OTA_FIRMWARE_MD5_URL.c_str());
+    Serial.println(OTA_FIRMWARE_VERSION_URL.c_str());
 
     // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/14
     randomSeed(analogRead(RANDOM_PIN));
@@ -59,11 +76,21 @@ void setup()
         }
         else
         {
-            // Check passed, just wait until 10s are over.
+            // Check passed, now connect to WiFi.
+            wifiWrapper.connectWiFi();
+
+            // Now perform OTA update if available.
+            LOOP_FUNCTION_ENTERED = false; // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/39
+            ota.begin(VERSION);
+
+            // Just wait until 10s are over.
             int additionalDelay = 10000 - millis();
             Serial.print("Additional delay before switching to loop(): ");
             Serial.println(additionalDelay);
-            delay(additionalDelay);
+            if (additionalDelay > 0)
+            {
+                delay(additionalDelay);
+            }
         }
     }
 
@@ -88,6 +115,11 @@ void setup()
 
 void loop()
 {
+    if (!LOOP_FUNCTION_ENTERED) // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/39
+    {
+        LOOP_FUNCTION_ENTERED = true;
+    }
+
     if (selfCheck.SELF_CHECK_PASSED) // Execute loop only if self check passed
     {
         // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/14
