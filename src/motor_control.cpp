@@ -95,7 +95,8 @@ std::string applyRandomDirectionAndSpeed(ChassisMotor leftMotor,
 
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/32
 bool obstacleDetection(ChassisMotor leftMotor,
-                       ChassisMotor rightMotor)
+                       ChassisMotor rightMotor,
+                       int unittestMeasuredDistanceMillimeter)
 {
 #ifndef UNIT_TESTING
     digitalWrite(SENSOR_TRIGGER_PIN, LOW); // Set pin low for a clean start when setting high
@@ -110,7 +111,13 @@ bool obstacleDetection(ChassisMotor leftMotor,
 
     // Convert to millimeters
     unsigned long distanceMillimeter = (pulseLengthMicroseconds / 2) * SPEED_OF_SOUND_MILLIMETER_PER_MICROSECOND; // Divided by two because pulse needs to travel to obstacle and back.
-#endif                                                                                                            // UNIT_TESTING
+#else
+    unsigned long distanceMillimeter = 20000;
+    if (unittestMeasuredDistanceMillimeter > 0)
+    {
+        distanceMillimeter = unittestMeasuredDistanceMillimeter;
+    }
+#endif // UNIT_TESTING
 
     // Stop motors in case of an obstacle
     // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/32

@@ -15,6 +15,7 @@ std::string applyRandomDirectionAndSpeed(ChassisMotor leftMotor,
 
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/32
 bool obstacleDetection(ChassisMotor leftMotor,
-                       ChassisMotor rightMotor);
+                       ChassisMotor rightMotor,
+                       int unittestMeasuredDistanceMillimeter = 0);
 
 #endif // MOTOR_CONTROL_H
