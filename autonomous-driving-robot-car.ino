@@ -9,7 +9,6 @@
 
 #include "src/VERSION.h"
 
-bool LOOP_FUNCTION_ENTERED = true; // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/39
 const int LED = 2;
 
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/14

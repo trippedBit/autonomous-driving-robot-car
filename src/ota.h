@@ -50,8 +50,13 @@ public:
     /**
      * @brief Starts the OTA update process. Only updates if the MD5 matches.
      * @param currentVersion Currently flashed firmware version as string.
+     * @param unittestMD5 String MD5 to use during unittests.
+     * @param unittestErrorDuringUpdate bool Indicates an error during update.
+     * @return int Return code
      */
-    void begin(const char *currentVersion);
+    int begin(const char *currentVersion,
+              std::string unittestMD5 = "",
+              bool unittestErrorDuringUpdate = false);
 };
 
 #endif // OTA_H
