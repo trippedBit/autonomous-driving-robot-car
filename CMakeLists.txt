@@ -26,6 +26,7 @@ add_executable(tests
   tests/motor_control.cpp
   tests/ota.cpp
   tests/self_check.cpp
+  tests/wifi_wrapper.cpp
 )
 
 # Coverage flags

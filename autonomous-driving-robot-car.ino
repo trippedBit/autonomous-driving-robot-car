@@ -137,6 +137,15 @@ void loop()
                                      direction,
                                      velocityPWM);
 
-        delay(timeDirectionMovement);
+        int remainingMillis = timeDirectionMovement;
+        while (remainingMillis > 0)
+        {
+            int millisWhileLoopStart = millis();
+
+            obstacleDetection(leftMotor,
+                              rightMotor);
+
+            remainingMillis = timeDirectionMovement - (millis() - millisWhileLoopStart);
+        }
     }
 }

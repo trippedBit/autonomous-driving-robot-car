@@ -83,4 +83,12 @@ const int VELOCITY_MIN = 150;
 const int VELOCITY_MID = 200;
 const int VELOCITY_MAX = 250;
 
+// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/31
+const int SENSOR_TRIGGER_PIN = -1;
+const int SENSOR_TRIGGER_PIN_LOW_TIME_MICROSECONDS = 5;
+const int SENSOR_TRIGGER_PIN_HIGH_TIME_MICROSECONDS = 10;
+const int SENSOR_ECHO_PIN = -1;
+const unsigned long SPEED_OF_SOUND_MILLIMETER_PER_MICROSECOND = 0.34346; // 343,46 m/s at 20°C
+const int DISTANCE_THRESHOLD_MILLIMETER = 30000;                         // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/32
+
 #endif // CONFIGURATION_H

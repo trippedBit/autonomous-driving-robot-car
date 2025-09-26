@@ -20,3 +20,4 @@
 17|Ferrule|1|Ferrule for entry 16 on L298N side.
 18|Cable|1|Connection between L298N OUT4 and Motor2-.
 19|Ferrule|1|Ferrule for entry 18 on L298N side.
+20|HC-SR04|1|Sensor to detect obstacles in front of the robot.
