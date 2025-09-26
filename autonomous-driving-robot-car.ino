@@ -14,12 +14,14 @@ const int LED = 2;
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/14
 int timeDirectionMovement = 2000;
 
-ChassisMotor leftMotor(ENA_PIN,
-                       FORWARD1_PIN,
-                       BACKWARD1_PIN);
-ChassisMotor rightMotor(ENB_PIN,
-                        FORWARD2_PIN,
-                        BACKWARD2_PIN);
+ChassisMotor rightMotor(ENA_PIN,
+                        FORWARD1_PIN,
+                        BACKWARD1_PIN,
+                        RIGHT_MOTOR_PWM_FACTOR);
+ChassisMotor leftMotor(ENB_PIN,
+                       FORWARD2_PIN,
+                       BACKWARD2_PIN,
+                       LEFT_MOTOR_PWM_FACTOR);
 
 SelfCheck selfCheck;
 
