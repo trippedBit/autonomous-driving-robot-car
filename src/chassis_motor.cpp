@@ -2,11 +2,13 @@
 
 ChassisMotor::ChassisMotor(int enablePin,
                            int forwardPin,
-                           int backwardPin)
+                           int backwardPin,
+                           float pwmFactor)
 {
     _enablePin = enablePin;
     _forwardPin = forwardPin;
     _backwardPin = backwardPin;
+    _pwmFactor = pwmFactor; // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/36
 
 #ifndef UNIT_TESTING
     pinMode(_enablePin, OUTPUT);
@@ -112,9 +114,32 @@ int ChassisMotor::setMovementDirection(MovementDirection direction)
 }
 
 // Requirement: None
-void ChassisMotor::setVelocityPWM(int velocityPWM)
+float ChassisMotor::setVelocityPWM(int velocityPWM)
 {
+    // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/36)
 #ifndef UNIT_TESTING
-    analogWrite(_enablePin, velocityPWM);
+    Serial.print("Given PWM: ");
+    Serial.println(velocityPWM);
 #endif // UNIT_TESTING
+
+    float pwmToApply = velocityPWM * _pwmFactor;
+    if (pwmToApply > 255)
+    {
+        pwmToApply = 255;
+    }
+    else if (pwmToApply < 0)
+    {
+        pwmToApply = 0;
+    }
+
+#ifndef UNIT_TESTING
+    Serial.print("Adjusted PWM (factor ");
+    Serial.print(_pwmFactor);
+    Serial.print("): ");
+    Serial.println(pwmToApply);
+
+    analogWrite(_enablePin, pwmToApply);
+#endif // UNIT_TESTING
+
+    return pwmToApply;
 }

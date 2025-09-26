@@ -91,4 +91,8 @@ const int SENSOR_ECHO_PIN = -1;
 const unsigned long SPEED_OF_SOUND_MILLIMETER_PER_MICROSECOND = 0.34346; // 343,46 m/s at 20°C
 const int DISTANCE_THRESHOLD_MILLIMETER = 30000;                         // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/32
 
+// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/36
+const float LEFT_MOTOR_PWM_FACTOR = 1;
+const float RIGHT_MOTOR_PWM_FACTOR = 0.90;
+
 #endif // CONFIGURATION_H
