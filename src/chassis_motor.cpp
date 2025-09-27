@@ -10,6 +10,8 @@ ChassisMotor::ChassisMotor(int enablePin,
     _backwardPin = backwardPin;
     _pwmFactor = pwmFactor; // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/36
 
+    setMovementDirection(STOP); // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/46
+
 #ifndef UNIT_TESTING
     pinMode(_enablePin, OUTPUT);
     analogWrite(_enablePin, 0); // Disable motor at startup
@@ -61,9 +63,10 @@ int ChassisMotor::getDirectionPinState(ControlPin pin)
 }
 
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/15
+// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/46
 int ChassisMotor::setMovementDirection(MovementDirection direction)
 {
-    int returnValue = -1; // Default to error
+    MovementDirection returnValue = ERROR; // Default to error
 
 #ifndef UNIT_TESTING
     Serial.print("Setting pins ");
@@ -80,7 +83,8 @@ int ChassisMotor::setMovementDirection(MovementDirection direction)
         Serial.println("LOW / LOW");
         digitalWrite(_forwardPin, LOW);
         digitalWrite(_backwardPin, LOW);
-#endif // UNIT_TESTING
+#endif                                            // UNIT_TESTING
+        _directionBeforeStop = _currentDirection; // Store last direction before stop
         returnValue = STOP;
         break;
     case FORWARD:
@@ -106,11 +110,23 @@ int ChassisMotor::setMovementDirection(MovementDirection direction)
         digitalWrite(_forwardPin, LOW);
         digitalWrite(_backwardPin, LOW);
 #endif // UNIT_TESTING
-        returnValue = -2;
+        returnValue = INVALID;
         break;
     }
 
+    _currentDirection = returnValue;
+
     return returnValue;
+}
+
+// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/46
+int ChassisMotor::setMovementDirectionToDirectionBeforeStop()
+{
+    if (_currentDirection != STOP)
+    {
+        return ERROR; // Can only set to direction before stop if currently stopped
+    }
+    return setMovementDirection(_directionBeforeStop);
 }
 
 // Requirement: None
