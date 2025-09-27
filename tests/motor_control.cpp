@@ -28,7 +28,7 @@ TEST_CASE("Movement calculation for left turn is correct", "[motor_control]")
     REQUIRE(returnValue == "radians [rad]: 0.436332 | distanceMM [mm]: 130.899689 | circumference [MM]: 210.486710 | revolutions per second [rps]: 0.333333 | velocity [mm/s]: 70.162239 | activeMilliSeconds [ms]: 1865.671509");
 }
 
-// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/32
+// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/46
 TEST_CASE("Obstacle detection", "[motor_control]")
 {
     ChassisMotor leftMotor(1, 2, 3);
@@ -41,11 +41,11 @@ TEST_CASE("Obstacle detection", "[motor_control]")
         REQUIRE(returnValue == true);
     }
 
-    SECTION("Obstacle within range - 29999mm")
+    SECTION("Obstacle within range - 299mm")
     {
         bool returnValue = obstacleDetection(leftMotor,
                                              rightMotor,
-                                             29999);
+                                             299);
         REQUIRE(returnValue == true);
     }
 
@@ -65,11 +65,11 @@ TEST_CASE("Obstacle detection", "[motor_control]")
         REQUIRE(returnValue == true);
     }
 
-    SECTION("Obstacle outside range - 30001mm")
+    SECTION("Obstacle outside range - 301mm")
     {
         bool returnValue = obstacleDetection(leftMotor,
                                              rightMotor,
-                                             30001);
+                                             301);
         REQUIRE(returnValue == false);
     }
 }

@@ -93,12 +93,13 @@ std::string applyRandomDirectionAndSpeed(ChassisMotor leftMotor,
            "activeMilliSeconds [ms]: " + std::to_string(activeMilliSeconds);
 }
 
-// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/32
+// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/46
 bool obstacleDetection(ChassisMotor leftMotor,
                        ChassisMotor rightMotor,
                        int unittestMeasuredDistanceMillimeter)
 {
 #ifndef UNIT_TESTING
+    pinMode(SENSOR_TRIGGER_PIN, OUTPUT);
     digitalWrite(SENSOR_TRIGGER_PIN, LOW); // Set pin low for a clean start when setting high
     delayMicroseconds(SENSOR_TRIGGER_PIN_LOW_TIME_MICROSECONDS);
     digitalWrite(SENSOR_TRIGGER_PIN, HIGH);                       // Start trigger
@@ -107,28 +108,53 @@ bool obstacleDetection(ChassisMotor leftMotor,
 
     // Get echo pulse
     pinMode(SENSOR_ECHO_PIN, INPUT);
-    unsigned long pulseLengthMicroseconds = pulseIn(SENSOR_ECHO_PIN, HIGH);
+    float pulseLengthMicroseconds = pulseIn(SENSOR_ECHO_PIN, HIGH);
+    Serial.print("Measured pulse length [µs]: ");
+    Serial.println(pulseLengthMicroseconds);
+
+    // Convert to seconds
+    float pulseLengthSeconds = pulseLengthMicroseconds * PULSE_MICROSECONDS_TO_SECONDS;
+    Serial.print("Measured pulse length [s]: ");
+    Serial.println(pulseLengthSeconds);
+
+    // Calculate distance in meters
+    float distanceMeter = (pulseLengthSeconds / 2) * (SPEED_OF_SOUND_METER_PER_SECOND); // Divided by two because pulse needs to travel to obstacle and back.
+    Serial.print("Measured distance [m]: ");
+    Serial.println(distanceMeter);
 
     // Convert to millimeters
-    unsigned long distanceMillimeter = (pulseLengthMicroseconds / 2) * SPEED_OF_SOUND_MILLIMETER_PER_MICROSECOND; // Divided by two because pulse needs to travel to obstacle and back.
+    float distanceMillimeter = distanceMeter * DISTANCE_METER_TO_MILLIMETER;
+    Serial.print("Measured distance [mm]: ");
+    Serial.println(distanceMillimeter);
 #else
-    unsigned long distanceMillimeter = 20000;
-    if (unittestMeasuredDistanceMillimeter > 0)
+    float distanceMillimeter = 0.0;
+    if (unittestMeasuredDistanceMillimeter != 0)
     {
         distanceMillimeter = unittestMeasuredDistanceMillimeter;
     }
 #endif // UNIT_TESTING
 
     // Stop motors in case of an obstacle
-    // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/32
+    // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/46
     if (distanceMillimeter < DISTANCE_THRESHOLD_MILLIMETER)
     {
 #ifndef UNIT_TESTING
-        leftMotor.setVelocityPWM(0);
-        rightMotor.setVelocityPWM(0);
+        Serial.println("Obstacle detected, stopping motors");
+        digitalWrite(LED, HIGH);
+        leftMotor.setMovementDirection(ChassisMotor::STOP);
+        rightMotor.setMovementDirection(ChassisMotor::STOP);
 #endif // UNIT_TESTING
 
         return true;
+    }
+    else
+    {
+#ifndef UNIT_TESTING
+        Serial.println("No obstacle detected, reactivating motors");
+        digitalWrite(LED, LOW);
+        leftMotor.setMovementDirectionToDirectionBeforeStop();
+        rightMotor.setMovementDirectionToDirectionBeforeStop();
+#endif // UNIT_TESTING
     }
 
     return false;
