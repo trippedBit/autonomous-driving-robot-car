@@ -134,3 +134,32 @@ TEST_CASE("Chassis motor calculated PWM with factor zero", "[chassis_motor]")
     float result = motor.setVelocityPWM(200);
     REQUIRE(result == 0.0f); // Calculated PWM is limited to range 0-255
 }
+
+// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/46
+TEST_CASE("Chassis motor set direction after stop - without previous direction", "[chassis_motor]")
+{
+    ChassisMotor motor(5, 6, 7);
+    int result = motor.setMovementDirectionToDirectionBeforeStop();
+    REQUIRE(result == ChassisMotor::INVALID);
+}
+
+// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/46
+TEST_CASE("Chassis motor set direction after stop - while in stop", "[chassis_motor]")
+{
+    ChassisMotor motor(5, 6, 7);
+    int result = motor.setMovementDirectionToDirectionBeforeStop();
+    REQUIRE(result == ChassisMotor::INVALID);
+    motor.setMovementDirection(ChassisMotor::STOP);
+    result = motor.setMovementDirectionToDirectionBeforeStop();
+    REQUIRE(result == ChassisMotor::INVALID);
+}
+
+// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/46
+TEST_CASE("Chassis motor set direction after stop - without being in STOP", "[chassis_motor]")
+{
+    ChassisMotor motor(5, 6, 7);
+    int result = motor.setMovementDirectionToDirectionBeforeStop();
+    REQUIRE(result == ChassisMotor::INVALID);
+    result = motor.setMovementDirectionToDirectionBeforeStop();
+    REQUIRE(result == ChassisMotor::ERROR);
+}

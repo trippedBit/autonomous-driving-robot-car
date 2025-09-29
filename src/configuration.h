@@ -5,6 +5,8 @@
 #include <math.h>
 #include <string>
 
+const int LED = 2;
+
 extern bool LOOP_FUNCTION_ENTERED; // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/39
 
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/38
@@ -61,7 +63,7 @@ const std::array<int, 4> WIFI_GATEWAY = WIFI_GATEWAY_MACRO;
 const std::array<int, 4> WIFI_SUBNET = WIFI_SUBNET_MACRO;
 
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/14
-const int RANDOM_PIN = 35;               // GPIO35 used to create a random seed using a not-connected pin.
+const int RANDOM_PIN = 26;               // GPIO26 used to create a random seed using a not-connected pin.
 const int WHEEL_DISTANCE_MM = 300;       // Distance between wheels in centimeters (= turn radius).
 const float WHEEL_RPM_VELOCITY_MIN = 20; // Measured RPM with VELOCITY_MIN; needs to be updated when VELOCITY_MIN is changed
 const float WHEEL_RPS_VELOCITY_MIN = WHEEL_RPM_VELOCITY_MIN / 60.0;
@@ -84,12 +86,14 @@ const int VELOCITY_MID = 200;
 const int VELOCITY_MAX = 250;
 
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/31
-const int SENSOR_TRIGGER_PIN = -1;
+const int SENSOR_TRIGGER_PIN = 33; // IO33 / GPIO33 / Trigger pin of HC-SR04
 const int SENSOR_TRIGGER_PIN_LOW_TIME_MICROSECONDS = 5;
 const int SENSOR_TRIGGER_PIN_HIGH_TIME_MICROSECONDS = 10;
-const int SENSOR_ECHO_PIN = -1;
-const unsigned long SPEED_OF_SOUND_MILLIMETER_PER_MICROSECOND = 0.34346; // 343,46 m/s at 20°C
-const int DISTANCE_THRESHOLD_MILLIMETER = 30000;                         // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/32
+const int SENSOR_ECHO_PIN = 35;                       // IO35 / GPIO35 / Echo pin of HC-SR04
+const float PULSE_MICROSECONDS_TO_SECONDS = 0.000001; // 1 second = 1.000.000 microseconds
+const float DISTANCE_METER_TO_MILLIMETER = 1000.0;    // 1 meter = 1000 millimeters
+const float SPEED_OF_SOUND_METER_PER_SECOND = 343.46; // 343,46 m/s at 20°C
+const int DISTANCE_THRESHOLD_MILLIMETER = 300;        // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/46
 
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/36
 const float LEFT_MOTOR_PWM_FACTOR = 1;
