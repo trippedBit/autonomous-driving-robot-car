@@ -10,7 +10,8 @@ ChassisMotor::ChassisMotor(int enablePin,
     _backwardPin = backwardPin;
     _pwmFactor = pwmFactor; // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/36
 
-    setMovementDirection(STOP); // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/46
+    _currentDirection = INVALID; // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/46
+    setMovementDirection(STOP);  // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/46
 
 #ifndef UNIT_TESTING
     pinMode(_enablePin, OUTPUT);
