@@ -33,6 +33,9 @@ bool SelfCheck::selfCheck(ChassisMotor leftMotor,
         Serial.print(leftMotorForwardPinState);
         Serial.print(" | ");
         Serial.println(leftMotorBackwardPinState);
+
+        FaultMemory().setFaultActive(2,
+                                     true);
 #endif // UNIT_TESTING
     }
 
@@ -55,6 +58,9 @@ bool SelfCheck::selfCheck(ChassisMotor leftMotor,
         Serial.print(rightMotorForwardPinState);
         Serial.print(" | ");
         Serial.println(rightMotorBackwardPinState);
+
+        FaultMemory().setFaultActive(3,
+                                     true);
 #endif // UNIT_TESTING
     }
 
