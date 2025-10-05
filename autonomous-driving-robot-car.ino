@@ -1,7 +1,10 @@
 #include <Arduino.h>
 
+#include <rom/rtc.h> // For reset reason
+
 #include "src/configuration.h"
 #include "src/chassis_motor.h"
+#include "src/fault_memory.h"
 #include "src/motor_control.h"
 #include "src/self_check.h"
 #include "src/ota.h"
@@ -48,6 +51,73 @@ void setup()
     Serial.println(OTA_FIRMWARE_URL.c_str());
     Serial.println(OTA_FIRMWARE_MD5_URL.c_str());
     Serial.println(OTA_FIRMWARE_VERSION_URL.c_str());
+
+    FaultMemory().setValue(4, 0);
+    FaultMemory().setValue(5, 0);
+
+    int resetReasonFaultAddressCPU1 = FaultMemory().getFaultEepromAddress(1);
+    int resetReasonDataAddressCPU1 = FaultMemory().getFaultDataEepromAddress(1);
+
+    int resetReason = rtc_get_reset_reason(0);
+    if (resetReason != ESP_RST_POWERON &&
+        resetReason != ESP_RST_SW &&
+        resetReason != EXT_CPU_RESET)
+    {
+        Serial.print("Unexpected Reset reason CPU1: ");
+        Serial.println(resetReason);
+
+        // Set fault for unexpected reset
+        FaultMemory().setFaultActive(resetReasonFaultAddressCPU1,
+                                     true);
+
+        FaultMemory().setValue(resetReasonDataAddressCPU1,
+                               resetReason);
+    }
+    else
+    {
+        Serial.print("Reset reason CPU1: ");
+        Serial.println(resetReason);
+    }
+
+    int resetReasonFaultAddressCPU2 = FaultMemory().getFaultEepromAddress(4);
+    int resetReasonDataAddressCPU2 = FaultMemory().getFaultDataEepromAddress(4);
+
+    resetReason = rtc_get_reset_reason(1);
+    if (resetReason != ESP_RST_POWERON &&
+        resetReason != ESP_RST_SW &&
+        resetReason != EXT_CPU_RESET)
+    {
+        Serial.print("Unexpected Reset reason CPU2: ");
+        Serial.println(resetReason);
+
+        // Set fault for unexpected reset
+        FaultMemory().setFaultActive(resetReasonFaultAddressCPU2,
+                                     true);
+
+        FaultMemory().setValue(resetReasonDataAddressCPU2,
+                               resetReason);
+    }
+    else
+    {
+        Serial.print("Reset reason CPU2: ");
+        Serial.println(resetReason);
+    }
+
+    std::vector<std::string> activeFaults = FaultMemory().getAllActiveFaults();
+    if (activeFaults.size() == 0)
+    {
+        Serial.println("No active faults on startup");
+    }
+    else
+    {
+        Serial.println("");
+        Serial.print("Active faults on startup: ");
+        for (const auto &fault : activeFaults)
+        {
+            Serial.println(fault.c_str());
+        }
+        Serial.println("");
+    }
 
     // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/14
     randomSeed(analogRead(RANDOM_PIN));
