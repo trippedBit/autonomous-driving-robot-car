@@ -2,6 +2,7 @@
 #define SELF_CHECK_H
 
 #include "chassis_motor.h"
+#include "fault_memory.h"
 
 class SelfCheck
 {
