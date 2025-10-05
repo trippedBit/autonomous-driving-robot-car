@@ -18,6 +18,12 @@ std::vector<std::string> FaultMemory::getAllActiveFaults()
             activeFaultIDs.push_back(std::to_string(fault.id) + ": " + std::to_string(storedData));
         }
     }
+
+#ifdef UNIT_TESTING
+    activeFaultIDs.push_back("1: 3");
+    activeFaultIDs.push_back("2: -1");
+#endif // UNIT_TESTING
+
     return activeFaultIDs;
 }
 

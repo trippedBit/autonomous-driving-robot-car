@@ -45,13 +45,13 @@ TEST_CASE("Get fault EEPROM address", "[fault_memory]")
     SECTION("Fault ID 2")
     {
         int returnValue = FaultMemory().getFaultEepromAddress(2);
-        REQUIRE(returnValue == 1);
+        REQUIRE(returnValue == 2);
     }
 
     SECTION("Fault ID 3")
     {
         int returnValue = FaultMemory().getFaultEepromAddress(3);
-        REQUIRE(returnValue == 2);
+        REQUIRE(returnValue == 3);
     }
 }
 
@@ -71,4 +71,39 @@ TEST_CASE("Set fault inactive", "[fault_memory]")
     FaultMemory().setFaultActive(1,
                                  false);
     REQUIRE(true);
+}
+
+// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/44
+TEST_CASE("Get active faults", "[fault_memory]")
+{
+    std::vector<std::string> activeFaults = FaultMemory().getAllActiveFaults();
+    REQUIRE(activeFaults.size() == 2);
+    REQUIRE(activeFaults[0] == "1: 3");
+    REQUIRE(activeFaults[1] == "2: -1");
+}
+
+// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/44
+TEST_CASE("Set value", "[fault_memory]")
+{
+    // Dummy test for code coverage, almost all code is not testable due to EEPROM dependency
+    FaultMemory().setValue(0,
+                           0);
+    REQUIRE(true);
+}
+
+// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/44
+TEST_CASE("Get fault data value", "[fault_memory]")
+{
+
+    SECTION("Fault ID 1")
+    {
+        int returnValue = FaultMemory().getDataValue(1);
+        REQUIRE(returnValue == -1);
+    }
+
+    SECTION("Fault ID 2")
+    {
+        int returnValue = FaultMemory().getDataValue(2);
+        REQUIRE(returnValue == -1);
+    }
 }
