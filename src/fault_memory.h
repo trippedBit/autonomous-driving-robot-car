@@ -11,6 +11,11 @@
 class FaultMemory
 {
 public:
+    enum FaultState
+    {
+        INACTIVE = 0,
+        ACTIVE = 1
+    };
     struct Fault
     {
         int id;
@@ -29,7 +34,7 @@ public:
          "Unexpected reset CPU1",
          "The system performed an unexpected reset. See https: // docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/system/misc_system_api.html#_CPPv418esp_reset_reason_t for a list of reasons.",
          "Reason not in [ESP_RST_POWERON, ESP_RST_SW]",
-         "Reason in [ESP_RST_POWERON, ESP_RST_SW]",
+         "on user request",
          0,
          0,
          1},
@@ -37,7 +42,7 @@ public:
          "Left motor check",
          "Left motor self check failed.",
          "leftMotorCheck == false",
-         "leftMotorCheck == true",
+         "on boot (independent of any check)",
          2,
          0,
          -1},
@@ -45,7 +50,7 @@ public:
          "Right motor check",
          "Right motor self check failed.",
          "rightMotorCheck == false",
-         "rightMotorCheck == true",
+         "on boot (independent of any check)",
          3,
          0,
          -1},
@@ -53,7 +58,7 @@ public:
          "Unexpected reset CPU2",
          "The system performed an unexpected reset. See https: // docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/system/misc_system_api.html#_CPPv418esp_reset_reason_t for a list of reasons.",
          "Reason not in [ESP_RST_POWERON, ESP_RST_SW]",
-         "Reason in [ESP_RST_POWERON, ESP_RST_SW]",
+         "on user request",
          4,
          0,
          5},
