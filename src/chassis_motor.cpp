@@ -1,4 +1,5 @@
 #include "chassis_motor.h"
+#include "mocks.h"
 
 ChassisMotor::ChassisMotor(int enablePin,
                            int forwardPin,
@@ -11,26 +12,19 @@ ChassisMotor::ChassisMotor(int enablePin,
     _pwmFactor = pwmFactor; // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/36
 
     _currentDirection = INVALID; // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/46
-    setMovementDirection(STOP);  // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/46
 
-#ifndef UNIT_TESTING
     pinMode(_enablePin, OUTPUT);
     analogWrite(_enablePin, 0); // Disable motor at startup
     pinMode(_forwardPin, OUTPUT);
     digitalWrite(_forwardPin, LOW); // Ensure motor is not moving at startup
     pinMode(_backwardPin, OUTPUT);
     digitalWrite(_backwardPin, LOW); // Ensure motor is not moving at startup
-#endif                               // UNIT_TESTING
 }
 
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/18
 int ChassisMotor::getEnablePinAnalogValue()
 {
-#ifndef UNIT_TESTING
     return analogRead(_enablePin);
-#else
-    return 0;
-#endif
 }
 
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/18
@@ -41,10 +35,10 @@ int ChassisMotor::getDirectionPinState(ControlPin pin)
     int pinToCheck = -1; // Invalid pin
     switch (pin)
     {
-    case FORWARD:
+    case FORWARD_PIN:
         pinToCheck = _forwardPin;
         break;
-    case BACKWARD:
+    case BACKWARD_PIN:
         pinToCheck = _backwardPin;
         break;
     default:
@@ -53,11 +47,7 @@ int ChassisMotor::getDirectionPinState(ControlPin pin)
 
     if (pinToCheck != -1)
     {
-#ifndef UNIT_TESTING
         pinState = digitalRead(pinToCheck);
-#else
-        pinState = 0; // Simulate LOW in unit testing mode
-#endif // UNIT_TESTING
     }
 
     return pinState;
@@ -69,50 +59,50 @@ int ChassisMotor::setMovementDirection(MovementDirection direction)
 {
     MovementDirection returnValue = ERROR; // Default to error
 
-#ifndef UNIT_TESTING
-    Serial.print("Setting pins ");
-    Serial.print(_forwardPin);
-    Serial.print(" / ");
-    Serial.print(_backwardPin);
-    Serial.print(" to ");
-#endif // UNIT_TESTING
-
-    switch (direction)
+    if (millis() >= 10000)
     {
-    case STOP:
-#ifndef UNIT_TESTING
-        Serial.println("LOW / LOW");
-        digitalWrite(_forwardPin, LOW);
-        digitalWrite(_backwardPin, LOW);
-#endif                                            // UNIT_TESTING
-        _directionBeforeStop = _currentDirection; // Store last direction before stop
-        returnValue = STOP;
-        break;
-    case FORWARD:
-#ifndef UNIT_TESTING
-        Serial.println("HIGH / LOW");
-        digitalWrite(_forwardPin, HIGH);
-        digitalWrite(_backwardPin, LOW);
-#endif // UNIT_TESTING
-        returnValue = FORWARD;
-        break;
-    case BACKWARD:
-#ifndef UNIT_TESTING
-        Serial.println("LOW / HIGH");
-        digitalWrite(_forwardPin, LOW);
-        digitalWrite(_backwardPin, HIGH);
-#endif // UNIT_TESTING
-        returnValue = BACKWARD;
-        break;
-    default:
-// Invalid direction, stop the motor as a safety measure
-#ifndef UNIT_TESTING
-        Serial.println("LOW / LOW (invalid direction)");
-        digitalWrite(_forwardPin, LOW);
-        digitalWrite(_backwardPin, LOW);
-#endif // UNIT_TESTING
-        returnValue = INVALID;
-        break;
+        Serial.print("Setting pins ");
+        Serial.print(_forwardPin);
+        Serial.print(" / ");
+        Serial.print(_backwardPin);
+        Serial.print(" to ");
+
+        switch (direction)
+        {
+        case STOP:
+            Serial.println("LOW / LOW");
+            digitalWrite(_forwardPin, LOW);
+            digitalWrite(_backwardPin, LOW);
+
+            _directionBeforeStop = _currentDirection; // Store last direction before stop
+            returnValue = STOP;
+            break;
+        case FORWARD:
+
+            Serial.println("HIGH / LOW");
+            digitalWrite(_forwardPin, HIGH);
+            digitalWrite(_backwardPin, LOW);
+
+            returnValue = FORWARD;
+            break;
+        case BACKWARD:
+
+            Serial.println("LOW / HIGH");
+            digitalWrite(_forwardPin, LOW);
+            digitalWrite(_backwardPin, HIGH);
+
+            returnValue = BACKWARD;
+            break;
+        default:
+            // Invalid direction, stop the motor as a safety measure
+
+            Serial.println("LOW / LOW (invalid direction)");
+            digitalWrite(_forwardPin, LOW);
+            digitalWrite(_backwardPin, LOW);
+
+            returnValue = INVALID;
+            break;
+        }
     }
 
     _currentDirection = returnValue;
@@ -134,10 +124,8 @@ int ChassisMotor::setMovementDirectionToDirectionBeforeStop()
 float ChassisMotor::setVelocityPWM(int velocityPWM)
 {
     // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/36)
-#ifndef UNIT_TESTING
     Serial.print("Given PWM: ");
     Serial.println(velocityPWM);
-#endif // UNIT_TESTING
 
     float pwmToApply = velocityPWM * _pwmFactor;
     if (pwmToApply > 255)
@@ -149,14 +137,12 @@ float ChassisMotor::setVelocityPWM(int velocityPWM)
         pwmToApply = 0;
     }
 
-#ifndef UNIT_TESTING
     Serial.print("Adjusted PWM (factor ");
     Serial.print(_pwmFactor);
     Serial.print("): ");
     Serial.println(pwmToApply);
 
     analogWrite(_enablePin, pwmToApply);
-#endif // UNIT_TESTING
 
     return pwmToApply;
 }

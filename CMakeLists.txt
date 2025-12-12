@@ -17,6 +17,7 @@ add_executable(tests
   src/chassis_motor.cpp
   src/configuration.cpp
   src/fault_memory.cpp
+  src/mocks.cpp
   src/motor_control.cpp
   src/ota.cpp
   src/self_check.cpp

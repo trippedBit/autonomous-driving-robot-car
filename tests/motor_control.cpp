@@ -1,6 +1,7 @@
 #include "../build/_deps/catch2-src/src/catch2/catch_test_macros.hpp"
 
 #include "../src/motor_control.h"
+#include "../src/mocks.h"
 
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/15
 TEST_CASE("Movement calculation for right turn is correct", "[motor_control]")
@@ -71,5 +72,63 @@ TEST_CASE("Obstacle detection", "[motor_control]")
                                              rightMotor,
                                              301);
         REQUIRE(returnValue == false);
+    }
+}
+
+TEST_CASE("First movement delay", "[motor_control]")
+{
+    SECTION("Delay for first movement - TEST_0001")
+    {
+        ChassisMotor leftMotor(1,
+                               2,
+                               3);
+        ChassisMotor rightMotor(4,
+                                5,
+                                6);
+
+        std::array<ChassisMotor, 2> motors = {leftMotor,
+                                              rightMotor};
+
+        // Step 1
+        for (ChassisMotor &motor : motors)
+        {
+            REQUIRE(motor.getDirectionPinState(motor.FORWARD_PIN) == ChassisMotor::STOP);
+            REQUIRE(motor.getDirectionPinState(motor.BACKWARD_PIN) == ChassisMotor::STOP);
+        }
+
+        // Step 2
+        for (ChassisMotor &motor : motors)
+        {
+            motor.setMovementDirection(ChassisMotor::FORWARD);
+
+            REQUIRE(motor.getDirectionPinState(motor.FORWARD_PIN) == ChassisMotor::STOP);
+            REQUIRE(motor.getDirectionPinState(motor.BACKWARD_PIN) == ChassisMotor::STOP);
+        }
+
+        // Step 3
+        setMockMillis(9900);
+        std::cout << "Waited " << millis() << "ms (simulated)..." << std::endl;
+        for (ChassisMotor &motor : motors)
+        {
+            REQUIRE(motor.getDirectionPinState(motor.FORWARD_PIN) == ChassisMotor::STOP);
+            REQUIRE(motor.getDirectionPinState(motor.BACKWARD_PIN) == ChassisMotor::STOP);
+        }
+
+        // Step 4
+        setMockMillis(10000);
+        for (ChassisMotor &motor : motors)
+        {
+            REQUIRE(motor.getDirectionPinState(motor.FORWARD_PIN) == ChassisMotor::STOP);
+            REQUIRE(motor.getDirectionPinState(motor.BACKWARD_PIN) == ChassisMotor::STOP);
+        }
+
+        // Step 5
+        for (ChassisMotor &motor : motors)
+        {
+            motor.setMovementDirection(ChassisMotor::FORWARD);
+
+            REQUIRE(motor.getDirectionPinState(motor.FORWARD_PIN) == ChassisMotor::FORWARD);
+            REQUIRE(motor.getDirectionPinState(motor.BACKWARD_PIN) == ChassisMotor::STOP);
+        }
     }
 }
