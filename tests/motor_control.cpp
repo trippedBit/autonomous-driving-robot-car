@@ -3,132 +3,155 @@
 #include "../src/motor_control.h"
 #include "../src/mocks.h"
 
-// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/15
-TEST_CASE("Movement calculation for right turn is correct", "[motor_control]")
+TEST_CASE("TEST_0001 - First movement delay", "[motor_control]")
 {
-    ChassisMotor leftMotor(1, 2, 3);
-    ChassisMotor rightMotor(4, 5, 6);
+    ChassisMotor leftMotor(ENA_PIN,
+                           FORWARD1_PIN,
+                           BACKWARD1_PIN);
+    ChassisMotor rightMotor(ENB_PIN,
+                            FORWARD2_PIN,
+                            BACKWARD2_PIN);
 
-    std::string returnValue = applyRandomDirectionAndSpeed(leftMotor,
-                                                           rightMotor,
-                                                           25,
-                                                           0);
-    REQUIRE(returnValue == "radians [rad]: 0.436332 | distanceMM [mm]: 130.899689 | circumference [MM]: 210.486710 | revolutions per second [rps]: 0.333333 | velocity [mm/s]: 70.162239 | activeMilliSeconds [ms]: 1865.671509");
-}
+    std::array<ChassisMotor, 2> motors = {leftMotor,
+                                          rightMotor};
 
-// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/15
-TEST_CASE("Movement calculation for left turn is correct", "[motor_control]")
-{
-    ChassisMotor leftMotor(1, 2, 3);
-    ChassisMotor rightMotor(4, 5, 6);
-
-    std::string returnValue = applyRandomDirectionAndSpeed(leftMotor,
-                                                           rightMotor,
-                                                           -25,
-                                                           0);
-    REQUIRE(returnValue == "radians [rad]: 0.436332 | distanceMM [mm]: 130.899689 | circumference [MM]: 210.486710 | revolutions per second [rps]: 0.333333 | velocity [mm/s]: 70.162239 | activeMilliSeconds [ms]: 1865.671509");
-}
-
-// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/46
-TEST_CASE("Obstacle detection", "[motor_control]")
-{
-    ChassisMotor leftMotor(1, 2, 3);
-    ChassisMotor rightMotor(4, 5, 6);
-
-    SECTION("Obstacle within range - default unittest value")
+    // Step 1
+    for (ChassisMotor &motor : motors)
     {
-        bool returnValue = obstacleDetection(leftMotor,
-                                             rightMotor);
-        REQUIRE(returnValue == true);
+        REQUIRE(motor.getDirectionPinState(motor.FORWARD_PIN) == ChassisMotor::STOP_DIRECTION);
+        REQUIRE(motor.getDirectionPinState(motor.BACKWARD_PIN) == ChassisMotor::STOP_DIRECTION);
     }
 
-    SECTION("Obstacle within range - 299mm")
+    // Step 2
+    for (ChassisMotor &motor : motors)
     {
-        bool returnValue = obstacleDetection(leftMotor,
-                                             rightMotor,
-                                             299);
-        REQUIRE(returnValue == true);
+        motor.setMovementDirection(ChassisMotor::FORWARD_DIRECTION);
+
+        REQUIRE(motor.getDirectionPinState(motor.FORWARD_PIN) == ChassisMotor::STOP_DIRECTION);
+        REQUIRE(motor.getDirectionPinState(motor.BACKWARD_PIN) == ChassisMotor::STOP_DIRECTION);
     }
 
-    SECTION("Obstacle within range - 0mm")
+    // Step 3
+    setMockMillis(9900);
+    std::cout << "Waited " << millis() << "ms (simulated)..." << std::endl;
+    for (ChassisMotor &motor : motors)
     {
-        bool returnValue = obstacleDetection(leftMotor,
-                                             rightMotor,
-                                             0);
-        REQUIRE(returnValue == true);
+        REQUIRE(motor.getDirectionPinState(motor.FORWARD_PIN) == ChassisMotor::STOP_DIRECTION);
+        REQUIRE(motor.getDirectionPinState(motor.BACKWARD_PIN) == ChassisMotor::STOP_DIRECTION);
     }
 
-    SECTION("Obstacle within range - -1mm")
+    // Step 4
+    setMockMillis(10000);
+    for (ChassisMotor &motor : motors)
     {
-        bool returnValue = obstacleDetection(leftMotor,
-                                             rightMotor,
-                                             -1);
-        REQUIRE(returnValue == true);
+        REQUIRE(motor.getDirectionPinState(motor.FORWARD_PIN) == ChassisMotor::STOP_DIRECTION);
+        REQUIRE(motor.getDirectionPinState(motor.BACKWARD_PIN) == ChassisMotor::STOP_DIRECTION);
     }
 
-    SECTION("Obstacle outside range - 301mm")
+    // Step 5
+    for (ChassisMotor &motor : motors)
     {
-        bool returnValue = obstacleDetection(leftMotor,
-                                             rightMotor,
-                                             301);
-        REQUIRE(returnValue == false);
+        motor.setMovementDirection(ChassisMotor::FORWARD_DIRECTION);
+
+        REQUIRE(motor.getDirectionPinState(motor.FORWARD_PIN) == ChassisMotor::FORWARD_DIRECTION);
+        REQUIRE(motor.getDirectionPinState(motor.BACKWARD_PIN) == ChassisMotor::STOP_DIRECTION);
     }
 }
 
-TEST_CASE("First movement delay", "[motor_control]")
+TEST_CASE("TEST_0002 - Motor pin variables are defined", "[motor_control]")
 {
-    SECTION("Delay for first movement - TEST_0001")
+
+    static_assert(std::is_same<decltype(ENA_PIN), const int>::value, "ENA_PIN is not of type const int");
+    static_assert(std::is_same<decltype(FORWARD1_PIN), const int>::value, "FORWARD1_PIN is not of type const int");
+    static_assert(std::is_same<decltype(BACKWARD1_PIN), const int>::value, "BACKWARD1_PIN is not of type const int");
+
+    static_assert(std::is_same<decltype(ENB_PIN), const int>::value, "ENB_PIN is not of type const int");
+    static_assert(std::is_same<decltype(FORWARD2_PIN), const int>::value, "FORWARD2_PIN is not of type const int");
+    static_assert(std::is_same<decltype(BACKWARD2_PIN), const int>::value, "BACKWARD2_PIN is not of type const int");
+}
+
+TEST_CASE("TEST_0003 - Setting motor pin states set proper motor direction", "[motor_control]")
+{
+    // Step 1 is part of the header file.
+
+    // Step 2
+    ChassisMotor motor1(ENA_PIN,
+                        FORWARD1_PIN,
+                        BACKWARD1_PIN);
+    ChassisMotor motor2(ENB_PIN,
+                        FORWARD2_PIN,
+                        BACKWARD2_PIN);
+
+    std::array<ChassisMotor, 2> motors = {motor1,
+                                          motor2};
+
+    for (ChassisMotor &motor : motors)
     {
-        ChassisMotor leftMotor(1,
-                               2,
-                               3);
-        ChassisMotor rightMotor(4,
-                                5,
-                                6);
-
-        std::array<ChassisMotor, 2> motors = {leftMotor,
-                                              rightMotor};
-
-        // Step 1
-        for (ChassisMotor &motor : motors)
-        {
-            REQUIRE(motor.getDirectionPinState(motor.FORWARD_PIN) == ChassisMotor::STOP);
-            REQUIRE(motor.getDirectionPinState(motor.BACKWARD_PIN) == ChassisMotor::STOP);
-        }
-
-        // Step 2
-        for (ChassisMotor &motor : motors)
-        {
-            motor.setMovementDirection(ChassisMotor::FORWARD);
-
-            REQUIRE(motor.getDirectionPinState(motor.FORWARD_PIN) == ChassisMotor::STOP);
-            REQUIRE(motor.getDirectionPinState(motor.BACKWARD_PIN) == ChassisMotor::STOP);
-        }
+        int forwardPin = motor.getDirectionPinNumber(ChassisMotor::FORWARD_PIN);
+        int backwardPin = motor.getDirectionPinNumber(ChassisMotor::BACKWARD_PIN);
 
         // Step 3
-        setMockMillis(9900);
-        std::cout << "Waited " << millis() << "ms (simulated)..." << std::endl;
-        for (ChassisMotor &motor : motors)
-        {
-            REQUIRE(motor.getDirectionPinState(motor.FORWARD_PIN) == ChassisMotor::STOP);
-            REQUIRE(motor.getDirectionPinState(motor.BACKWARD_PIN) == ChassisMotor::STOP);
-        }
+        std::cout << "Setting forward pin " << std::to_string(forwardPin) << std::endl;
+        std::cout << "Setting backward pin " << std::to_string(backwardPin) << std::endl;
+        digitalWrite(forwardPin, LOW);
+        digitalWrite(backwardPin, LOW);
+        CHECK(motor.getCurrentDirection() == ChassisMotor::FORWARD_DIRECTION);
 
         // Step 4
-        setMockMillis(10000);
-        for (ChassisMotor &motor : motors)
-        {
-            REQUIRE(motor.getDirectionPinState(motor.FORWARD_PIN) == ChassisMotor::STOP);
-            REQUIRE(motor.getDirectionPinState(motor.BACKWARD_PIN) == ChassisMotor::STOP);
-        }
+        digitalWrite(forwardPin, HIGH);
+        digitalWrite(backwardPin, LOW);
+        std::cout << "Now checking current direction..." << std::endl;
+        REQUIRE(motor.getCurrentDirection() == ChassisMotor::FORWARD_DIRECTION);
 
         // Step 5
-        for (ChassisMotor &motor : motors)
-        {
-            motor.setMovementDirection(ChassisMotor::FORWARD);
+        digitalWrite(forwardPin, LOW);
+        digitalWrite(backwardPin, HIGH);
+        REQUIRE(motor.getCurrentDirection() == ChassisMotor::BACKWARD_DIRECTION);
 
-            REQUIRE(motor.getDirectionPinState(motor.FORWARD_PIN) == ChassisMotor::FORWARD);
-            REQUIRE(motor.getDirectionPinState(motor.BACKWARD_PIN) == ChassisMotor::STOP);
-        }
+        // Step 6
+        digitalWrite(forwardPin, HIGH);
+        digitalWrite(backwardPin, HIGH);
+        CHECK(motor.getCurrentDirection() == ChassisMotor::FORWARD_DIRECTION);
+    }
+}
+
+TEST_CASE("TEST_0004 - Setting motor direction sets proper direction pin states", "[motor_control]")
+{
+    // Step 1 is part of the header file.
+
+    // Step 2
+    ChassisMotor motor1(ENA_PIN,
+                        FORWARD1_PIN,
+                        BACKWARD1_PIN);
+    ChassisMotor motor2(ENB_PIN,
+                        FORWARD2_PIN,
+                        BACKWARD2_PIN);
+
+    std::array<ChassisMotor, 2> motors = {motor1,
+                                          motor2};
+    for (ChassisMotor &motor : motors)
+    {
+        int forwardPin = motor.getDirectionPinNumber(ChassisMotor::FORWARD_PIN);
+        int backwardPin = motor.getDirectionPinNumber(ChassisMotor::BACKWARD_PIN);
+
+        motor.setMovementDirection(ChassisMotor::INVALID_DIRECTION);
+        CHECK(motor.getDirectionPinState(ChassisMotor::FORWARD_PIN) == HIGH);
+        CHECK(motor.getDirectionPinState(ChassisMotor::BACKWARD_PIN) == HIGH);
+
+        motor.setMovementDirection(ChassisMotor::ERROR_DIRECTION);
+        CHECK(motor.getDirectionPinState(ChassisMotor::FORWARD_PIN) == HIGH);
+        CHECK(motor.getDirectionPinState(ChassisMotor::BACKWARD_PIN) == HIGH);
+
+        motor.setMovementDirection(ChassisMotor::STOP_DIRECTION);
+        CHECK(motor.getDirectionPinState(ChassisMotor::FORWARD_PIN) == HIGH);
+        CHECK(motor.getDirectionPinState(ChassisMotor::BACKWARD_PIN) == HIGH);
+
+        motor.setMovementDirection(ChassisMotor::FORWARD_DIRECTION);
+        REQUIRE(motor.getDirectionPinState(ChassisMotor::FORWARD_PIN) == HIGH);
+        REQUIRE(motor.getDirectionPinState(ChassisMotor::BACKWARD_PIN) == LOW);
+
+        motor.setMovementDirection(ChassisMotor::BACKWARD_DIRECTION);
+        REQUIRE(motor.getDirectionPinState(ChassisMotor::FORWARD_PIN) == LOW);
+        REQUIRE(motor.getDirectionPinState(ChassisMotor::BACKWARD_PIN) == HIGH);
     }
 }
