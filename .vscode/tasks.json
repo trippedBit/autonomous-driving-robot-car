@@ -106,6 +106,20 @@
             }
         },
         {
+            "label": "Run tests, update coverage report but DO NOT reopen results",
+            "type": "shell",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Clean tests build directory",
+                "Run tests with coverage",
+                "Update coverage report"
+            ],
+            "problemMatcher": [],
+            "presentation": {
+                "clear": true
+            }
+        },
+        {
             "label": "Compile for ESP32",
             "type": "shell",
             "options": {

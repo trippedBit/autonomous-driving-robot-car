@@ -41,11 +41,15 @@ target_compile_definitions(tests PRIVATE UNIT_TESTING)
 # Optional: Coverage target
 add_custom_target(coverage
   COMMAND ${CMAKE_MAKE_PROGRAM} tests
-  COMMAND ./tests
+  COMMAND ./tests || true  # ' || true' needed to ensure the following commands are executed, although test execution might have failed
   COMMAND gcov -c
     ./CMakeFiles/tests.dir/src/chassis_motor.cpp.obj
+    ./CMakeFiles/tests.dir/src/configuration.cpp.obj
+    ./CMakeFiles/tests.dir/src/fault_memory.cpp.obj
     ./CMakeFiles/tests.dir/src/motor_control.cpp.obj
+    ./CMakeFiles/tests.dir/src/ota.cpp.obj
     ./CMakeFiles/tests.dir/src/self_check.cpp.obj
+    ./CMakeFiles/tests.dir/src/wifi_wrapper.cpp.obj
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
   COMMENT "Running tests and generating coverage report"
 )
