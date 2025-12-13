@@ -95,10 +95,8 @@ std::string applyRandomDirectionAndSpeed(ChassisMotor leftMotor,
 
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/46
 bool obstacleDetection(ChassisMotor leftMotor,
-                       ChassisMotor rightMotor,
-                       int unittestMeasuredDistanceMillimeter)
+                       ChassisMotor rightMotor)
 {
-#ifndef UNIT_TESTING
     pinMode(SENSOR_TRIGGER_PIN, OUTPUT);
     digitalWrite(SENSOR_TRIGGER_PIN, LOW); // Set pin low for a clean start when setting high
     delayMicroseconds(SENSOR_TRIGGER_PIN_LOW_TIME_MICROSECONDS);
@@ -126,35 +124,24 @@ bool obstacleDetection(ChassisMotor leftMotor,
     float distanceMillimeter = distanceMeter * DISTANCE_METER_TO_MILLIMETER;
     Serial.print("Measured distance [mm]: ");
     Serial.println(distanceMillimeter);
-#else
-    float distanceMillimeter = 0.0;
-    if (unittestMeasuredDistanceMillimeter != 0)
-    {
-        distanceMillimeter = unittestMeasuredDistanceMillimeter;
-    }
-#endif // UNIT_TESTING
 
     // Stop motors in case of an obstacle
     // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/46
     if (distanceMillimeter < DISTANCE_THRESHOLD_MILLIMETER)
     {
-#ifndef UNIT_TESTING
         Serial.println("Obstacle detected, stopping motors");
         digitalWrite(LED, HIGH);
-        leftMotor.setMovementDirection(ChassisMotor::STOP);
-        rightMotor.setMovementDirection(ChassisMotor::STOP);
-#endif // UNIT_TESTING
+        leftMotor.setMovementDirection(ChassisMotor::STOP_DIRECTION);
+        rightMotor.setMovementDirection(ChassisMotor::STOP_DIRECTION);
 
         return true;
     }
     else
     {
-#ifndef UNIT_TESTING
         Serial.println("No obstacle detected, reactivating motors");
         digitalWrite(LED, LOW);
         leftMotor.setMovementDirectionToDirectionBeforeStop();
         rightMotor.setMovementDirectionToDirectionBeforeStop();
-#endif // UNIT_TESTING
     }
 
     return false;

@@ -6,6 +6,7 @@
 
 #include "configuration.h"
 #include "chassis_motor.h"
+#include "mocks.h"
 
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/14
 std::string applyRandomDirectionAndSpeed(ChassisMotor leftMotor,
@@ -15,7 +16,6 @@ std::string applyRandomDirectionAndSpeed(ChassisMotor leftMotor,
 
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/46
 bool obstacleDetection(ChassisMotor leftMotor,
-                       ChassisMotor rightMotor,
-                       int unittestMeasuredDistanceMillimeter = 0);
+                       ChassisMotor rightMotor);
 
 #endif // MOTOR_CONTROL_H

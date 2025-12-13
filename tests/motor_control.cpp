@@ -155,3 +155,42 @@ TEST_CASE("TEST_0004 - Setting motor direction sets proper direction pin states"
         REQUIRE(motor.getDirectionPinState(ChassisMotor::BACKWARD_PIN) == HIGH);
     }
 }
+
+TEST_CASE("TEST_0005 - Parameter DISTANCE_THRESHOLD_MILLIMETER is defined in configuration", "[motor_control]")
+{
+    static_assert(std::is_same<decltype(DISTANCE_THRESHOLD_MILLIMETER), const int>::value, "DISTANCE_THRESHOLD_MILLIMETER is not of type const int");
+}
+
+TEST_CASE("TEST_0006 - Obstacle detection based on parameter", "[motor_control]")
+{
+    ChassisMotor motor1(ENA_PIN,
+                        FORWARD1_PIN,
+                        BACKWARD1_PIN);
+    ChassisMotor motor2(ENB_PIN,
+                        FORWARD2_PIN,
+                        BACKWARD2_PIN);
+
+    // Step 2
+    setMockPulseIn(500);
+    bool obstacleDetected = obstacleDetection(motor1,
+                                              motor2);
+    REQUIRE(obstacleDetected == false);
+
+    // Step 3
+    setMockPulseIn(301);
+    obstacleDetected = obstacleDetection(motor1,
+                                         motor2);
+    REQUIRE(obstacleDetected == false);
+
+    // Step 4
+    setMockPulseIn(299);
+    obstacleDetected = obstacleDetection(motor1,
+                                         motor2);
+    REQUIRE(obstacleDetected == true);
+
+    // Step 5
+    setMockPulseIn(300);
+    obstacleDetected = obstacleDetection(motor1,
+                                         motor2);
+    REQUIRE(obstacleDetected == true);
+}

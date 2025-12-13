@@ -1,8 +1,9 @@
 #include "mocks.h"
 
-unsigned long mockMillisValue = 0;
 std::map<int, double> analogPinValues;
 std::map<int, int> digitalPinValues;
+unsigned long mockMillisValue = 0;
+unsigned long mockPulseInValue = 0;
 std::map<int, PinMode> pinModes;
 
 double mockAnalogRead(int pin)
@@ -25,19 +26,24 @@ void mockDigitalWrite(int pin, int state)
     digitalPinValues[pin] = state;
 }
 
+void mockDoNothing(unsigned long value)
+{
+    // do nothing
+}
+
 void mockPinMode(int pin, PinMode pinMode)
 {
     pinModes[pin] = pinMode;
 }
 
-unsigned long originalMillis()
-{
-    return ::millis();
-}
-
 void setMockMillis(unsigned long value)
 {
     mockMillisValue = value;
+}
+
+void setMockPulseIn(unsigned long desiredDistanceInMillimeter)
+{
+    mockPulseInValue = ((desiredDistanceInMillimeter / DISTANCE_METER_TO_MILLIMETER) / SPEED_OF_SOUND_METER_PER_SECOND * 2) / PULSE_MICROSECONDS_TO_SECONDS;
 }
 
 void MockSerial::print(std::string text)
