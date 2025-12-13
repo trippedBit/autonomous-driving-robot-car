@@ -11,14 +11,47 @@ ChassisMotor::ChassisMotor(int enablePin,
     _backwardPin = backwardPin;
     _pwmFactor = pwmFactor; // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/36
 
-    _currentDirection = INVALID; // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/46
-
     pinMode(_enablePin, OUTPUT);
     analogWrite(_enablePin, 0); // Disable motor at startup
     pinMode(_forwardPin, OUTPUT);
     digitalWrite(_forwardPin, LOW); // Ensure motor is not moving at startup
     pinMode(_backwardPin, OUTPUT);
     digitalWrite(_backwardPin, LOW); // Ensure motor is not moving at startup
+}
+
+ChassisMotor::MovementDirection ChassisMotor::getCurrentDirection()
+{
+    MovementDirection returnValue = INVALID_DIRECTION;
+    int forwardPinState = getDirectionPinState(FORWARD_PIN);
+    int backwardPinState = getDirectionPinState(BACKWARD_PIN);
+
+    std::cout << "Forward pin state: " << std::to_string(forwardPinState) << std::endl;
+    std::cout << "Backward pin state: " << std::to_string(backwardPinState) << std::endl;
+
+    if (forwardPinState == HIGH && backwardPinState == LOW)
+    {
+        returnValue = FORWARD_DIRECTION;
+    }
+    else if (forwardPinState == LOW && backwardPinState == HIGH)
+    {
+        returnValue = BACKWARD_DIRECTION;
+    }
+
+    return returnValue;
+}
+
+int ChassisMotor::getDirectionPinNumber(ControlPin pin)
+{
+    if (pin == FORWARD_PIN)
+    {
+        return _forwardPin;
+    }
+    else if (pin == BACKWARD_PIN)
+    {
+        return _backwardPin;
+    }
+
+    return -1;
 }
 
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/18
@@ -57,7 +90,7 @@ int ChassisMotor::getDirectionPinState(ControlPin pin)
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/46
 int ChassisMotor::setMovementDirection(MovementDirection direction)
 {
-    MovementDirection returnValue = ERROR; // Default to error
+    MovementDirection returnValue = ERROR_DIRECTION; // Default to error
 
     if (millis() >= 10000)
     {
@@ -69,29 +102,29 @@ int ChassisMotor::setMovementDirection(MovementDirection direction)
 
         switch (direction)
         {
-        case STOP:
+        case STOP_DIRECTION:
             Serial.println("LOW / LOW");
             digitalWrite(_forwardPin, LOW);
             digitalWrite(_backwardPin, LOW);
 
-            _directionBeforeStop = _currentDirection; // Store last direction before stop
-            returnValue = STOP;
+            _directionBeforeStop = getCurrentDirection(); // Store last direction before stop
+            returnValue = STOP_DIRECTION;
             break;
-        case FORWARD:
+        case FORWARD_DIRECTION:
 
             Serial.println("HIGH / LOW");
             digitalWrite(_forwardPin, HIGH);
             digitalWrite(_backwardPin, LOW);
 
-            returnValue = FORWARD;
+            returnValue = FORWARD_DIRECTION;
             break;
-        case BACKWARD:
+        case BACKWARD_DIRECTION:
 
             Serial.println("LOW / HIGH");
             digitalWrite(_forwardPin, LOW);
             digitalWrite(_backwardPin, HIGH);
 
-            returnValue = BACKWARD;
+            returnValue = BACKWARD_DIRECTION;
             break;
         default:
             // Invalid direction, stop the motor as a safety measure
@@ -100,12 +133,10 @@ int ChassisMotor::setMovementDirection(MovementDirection direction)
             digitalWrite(_forwardPin, LOW);
             digitalWrite(_backwardPin, LOW);
 
-            returnValue = INVALID;
+            returnValue = INVALID_DIRECTION;
             break;
         }
     }
-
-    _currentDirection = returnValue;
 
     return returnValue;
 }
@@ -113,9 +144,9 @@ int ChassisMotor::setMovementDirection(MovementDirection direction)
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/46
 int ChassisMotor::setMovementDirectionToDirectionBeforeStop()
 {
-    if (_currentDirection != STOP)
+    if (getCurrentDirection() != STOP_DIRECTION)
     {
-        return ERROR; // Can only set to direction before stop if currently stopped
+        return ERROR_DIRECTION; // Can only set to direction before stop if currently stopped
     }
     return setMovementDirection(_directionBeforeStop);
 }

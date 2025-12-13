@@ -18,18 +18,20 @@ public:
     };
     enum MovementDirection
     {
-        INVALID = -2,
-        ERROR = -1,
-        STOP = 0,
-        FORWARD = 1,
-        BACKWARD = 2
+        INVALID_DIRECTION = -2,
+        ERROR_DIRECTION = -1,
+        STOP_DIRECTION = 0,
+        FORWARD_DIRECTION = 1,
+        BACKWARD_DIRECTION = 2
     };
     ChassisMotor(int enablePin,
                  int forwardPin,
                  int backwardPin,
                  float pwmFactor = 1);
 
+    ChassisMotor::MovementDirection getCurrentDirection();
     // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/18
+    int getDirectionPinNumber(ControlPin pin);
     int getDirectionPinState(ControlPin pin);
     // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/18
     int getEnablePinAnalogValue();
@@ -46,7 +48,6 @@ private:
     int _backwardPin;
     float _pwmFactor; // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/36
 
-    MovementDirection _currentDirection;    // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/46
     MovementDirection _directionBeforeStop; // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/46
 };
 
