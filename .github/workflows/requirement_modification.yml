@@ -1,0 +1,68 @@
+on:
+  push:
+    branches:
+      - 'development'
+    paths:
+      - 'requirements/*.md'
+  workflow_dispatch:
+
+jobs:
+  setup_repo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6.0.1
+        with:
+          fetch-depth: 2
+      - name: Get changes and create tickets
+        shell: bash
+        env:
+          # To use the token for issue creation, the action needs write access to the repo.
+          # This can be activated in the repo settings -> actions -> general -> workflow permissions
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |         
+          ids=()
+          for filename in $(git diff --name-only HEAD^1 HEAD); do
+            echo "Working on $filename"
+            if [[ -f "$filename" ]]; then
+              while IFS= read -r line; do
+                echo "Current line: '$line'"
+                
+                if [[ $line == "**ID**:"* ]]; then
+                  echo "ID found, adding to list"
+                  id_part="${line#**ID**: }"
+                  ids+=("$id_part")
+                fi
+              done < "$filename"
+            else
+              echo "File $filename does not exist."
+              ls -l
+              ls -l requirements
+            fi
+          done
+
+          echo "Next line shows found requirement IDs."
+          echo "${ids[@]}"
+
+          for req_id in "${ids[@]}"; do
+            echo "Searching requirement ID '$req_id' in test_specifications"
+            found_in_test=0
+            for filename in $(ls test_specifications/*.md); do
+              echo "Checking file '$filename'"
+
+              while IFS= read -r line; do
+                echo "Current line: '$line'"
+                
+                if [[ $line == "**REQ**: $req_id" ]]; then
+                  echo "REQ-ID found, creating issue to address the topic."
+                  found_in_file=1
+                  gh issue create --title "Requirement $req_id changed, test check needed" --body "$filename might be affected by the change. Please check and provide updates if needed."
+                fi
+              done < "$filename"
+            done
+            if [[ "$found_in_test" -eq "0" ]]; then
+              gh issue create --title "Requirement $req_id not covered by any test" --body "The requirement is not mentioned in any of the existing specs. Please check and provide updates if needed."
+            fi
+          done
+          
+          
