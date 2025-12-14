@@ -1,4 +1,5 @@
 #include "../build/_deps/catch2-src/src/catch2/catch_test_macros.hpp"
+#include "../build/_deps/catch2-src/src/catch2/matchers/catch_matchers_floating_point.hpp"
 
 #include "../src/motor_control.h"
 #include "../src/mocks.h"
@@ -193,4 +194,58 @@ TEST_CASE("TEST_0006 - Obstacle detection based on parameter", "[motor_control]"
     obstacleDetected = obstacleDetection(motor1,
                                          motor2);
     REQUIRE(obstacleDetected == true);
+}
+
+TEST_CASE("TEST_0007 - parameters LEFT_MOTOR_PWM_FACTOR and RIGHT_MOTOR_PWM_FACTOR are defined in configuration", "[motor_control]")
+{
+
+    static_assert(std::is_same<decltype(LEFT_MOTOR_PWM_FACTOR), const float>::value, "LEFT_MOTOR_PWM_FACTOR is not of type const float");
+    static_assert(std::is_same<decltype(RIGHT_MOTOR_PWM_FACTOR), const float>::value, "RIGHT_MOTOR_PWM_FACTOR is not of type const float");
+
+    REQUIRE_THAT(LEFT_MOTOR_PWM_FACTOR, Catch::Matchers::WithinAbs(1.0f, 0.001f));
+    REQUIRE_THAT(RIGHT_MOTOR_PWM_FACTOR, Catch::Matchers::WithinAbs(0.9f, 0.001f));
+}
+
+TEST_CASE("TEST_0008 - resulting PWM is limited to range 0-255 (default factor 1.0)", "[motor_control]")
+{
+    ChassisMotor motor1(ENA_PIN,
+                        FORWARD1_PIN,
+                        BACKWARD1_PIN,
+                        1.0);
+
+    REQUIRE_THAT(motor1.setVelocityPWM(-1), Catch::Matchers::WithinAbs(0.0f, 0.001f));
+    REQUIRE_THAT(motor1.setVelocityPWM(0), Catch::Matchers::WithinAbs(0.0f, 0.001f));
+    REQUIRE_THAT(motor1.setVelocityPWM(1), Catch::Matchers::WithinAbs(1.0f, 0.001f));
+    REQUIRE_THAT(motor1.setVelocityPWM(254), Catch::Matchers::WithinAbs(254.0f, 0.001f));
+    REQUIRE_THAT(motor1.setVelocityPWM(255), Catch::Matchers::WithinAbs(255.0f, 0.001f));
+    REQUIRE_THAT(motor1.setVelocityPWM(256), Catch::Matchers::WithinAbs(255.0f, 0.001f));
+}
+
+TEST_CASE("TEST_0009 - resulting PWM is limited to range 0-255 (default factor 0.9)", "[motor_control]")
+{
+    ChassisMotor motor1(ENA_PIN,
+                        FORWARD1_PIN,
+                        BACKWARD1_PIN,
+                        0.9);
+
+    REQUIRE_THAT(motor1.setVelocityPWM(-1), Catch::Matchers::WithinAbs(0.0f, 0.001f));
+    REQUIRE_THAT(motor1.setVelocityPWM(0), Catch::Matchers::WithinAbs(0.0f, 0.001f));
+    REQUIRE_THAT(motor1.setVelocityPWM(1), Catch::Matchers::WithinAbs(0.9f, 0.001f));
+    REQUIRE_THAT(motor1.setVelocityPWM(283), Catch::Matchers::WithinAbs(254.7f, 0.001f));
+    REQUIRE_THAT(motor1.setVelocityPWM(284), Catch::Matchers::WithinAbs(255.0f, 0.001f));
+}
+
+TEST_CASE("TEST_0010 - resulting PWM is limited to range 0-255 (default factor 0.1)", "[motor_control]")
+{
+    ChassisMotor motor1(ENA_PIN,
+                        FORWARD1_PIN,
+                        BACKWARD1_PIN,
+                        0.1);
+
+    REQUIRE_THAT(motor1.setVelocityPWM(-1), Catch::Matchers::WithinAbs(0.0f, 0.001f));
+    REQUIRE_THAT(motor1.setVelocityPWM(0), Catch::Matchers::WithinAbs(0.0f, 0.001f));
+    REQUIRE_THAT(motor1.setVelocityPWM(1), Catch::Matchers::WithinAbs(0.1f, 0.001f));
+    REQUIRE_THAT(motor1.setVelocityPWM(2549), Catch::Matchers::WithinAbs(254.9f, 0.001f));
+    REQUIRE_THAT(motor1.setVelocityPWM(2550), Catch::Matchers::WithinAbs(255.0f, 0.001f));
+    REQUIRE_THAT(motor1.setVelocityPWM(2551), Catch::Matchers::WithinAbs(255.0f, 0.001f));
 }
