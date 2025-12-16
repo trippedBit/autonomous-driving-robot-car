@@ -1,5 +1,9 @@
 **ID**: REQ_0002
 
+**Status**: Finalized
+
+**Type**: Functional
+
 **Description**:<br>
 The following pin definitions shall be used.
 
