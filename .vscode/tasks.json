@@ -4,6 +4,21 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "Configure CMake project",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "-S",
+                "${workspaceFolder}",
+                "-B",
+                "${workspaceFolder}/build",
+            ],
+            "problemMatcher": [],
+            "presentation": {
+                "clear": true
+            }
+        },
+        {
             "label": "Clean tests build directory",
             "type": "shell",
             "command": "cmake",
@@ -13,6 +28,26 @@
                 "-rf",
                 "${workspaceFolder}/build/CMakeFiles/tests.dir/src",
             ],
+            "problemMatcher": [],
+            "presentation": {
+                "clear": true
+            }
+        },
+        {
+            "label": "Recreate MakeFiles/tests.dir/src",
+            "type": "shell",
+            "linux": {
+                "command": "mkdir",
+                "args": [
+                    "${workspaceFolder}/build/CMakeFiles/tests.dir/src"
+                ]
+            },
+            "windows": {
+                "command": "mkdir",
+                "args": [
+                    "${workspaceFolder}/build/CMakeFiles/tests.dir/src"
+                ]
+            },
             "problemMatcher": [],
             "presentation": {
                 "clear": true
@@ -37,12 +72,17 @@
             ],
             "presentation": {
                 "clear": true
-            }
+            },
         },
         {
             "label": "Run tests",
             "type": "shell",
-            "command": "./build/tests.exe",
+            "windows": {
+                "command": "./build/tests.exe"
+            },
+            "linux": {
+                "command": "./build/tests"
+            },
             "group": "test",
             "dependsOn": "Build tests",
             "problemMatcher": [],
@@ -74,7 +114,12 @@
             "options": {
                 "cwd": "${workspaceFolder}"
             },
-            "command": ".venv/Scripts/python",
+            "windows": {
+                "command": ".venv/Scripts/python",
+            },
+            "linux": {
+                "command": "~/py-venv-autonomous-driving-robot-car/bin/python3",
+            },
             "args": [
                 "-m",
                 "gcovr",
@@ -91,14 +136,31 @@
             }
         },
         {
+            "label": "Open coverage report",
+            "type": "shell",
+            "windows": {
+                "command": "start coverage/coverage.html",
+            },
+            "linux": {
+                "command": "xdg-open coverage/coverage.html",
+                },
+            "isBackground": true,
+            "problemMatcher": [],
+            "presentation": {
+                "clear": false
+            }
+        },
+        {
             "label": "Run tests, update coverage report and show results",
             "type": "shell",
-            "command": "start coverage/coverage.html",
+            "isBackground": true,
             "dependsOrder": "sequence",
             "dependsOn": [
                 "Clean tests build directory",
+                "Recreate MakeFiles/tests.dir/src",
                 "Run tests with coverage",
-                "Update coverage report"
+                "Update coverage report",
+                "Open coverage report"
             ],
             "problemMatcher": [],
             "presentation": {
@@ -185,7 +247,12 @@
         {
             "label": "Calculate firmware MD5",
             "type": "shell",
-            "command": "(Get-FileHash -Path ./build/esp32.esp32.esp32/*.ino.bin -Algorithm md5).Hash.ToLower() | Out-File -FilePath ./build/esp32.esp32.esp32/firmware.md5 -Encoding ASCII",
+            "windows": {
+                "command": "(Get-FileHash -Path ./build/esp32.esp32.esp32/*.ino.bin -Algorithm md5).Hash.ToLower() | Out-File -FilePath ./build/esp32.esp32.esp32/firmware.md5 -Encoding ASCII",
+            },
+            "linux": {
+                "command": "md5sum ./build/esp32.esp32.esp32/*.ino.bin | awk '{ print $1 }' > ./build/esp32.esp32.esp32/firmware.md5",
+            },
             "problemMatcher": [],
             "presentation": {
                 "clear": true
