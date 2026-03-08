@@ -43,6 +43,7 @@ public:
 #ifdef UNIT_TESTING
 #define analogRead(pin) mockAnalogRead(pin)
 #define analogWrite(pin, value) mockAnalogWrite(pin, value)
+#define delay(value) mockDoNothing(value)
 #define delayMicroseconds(value) mockDoNothing(value)
 #define digitalRead(pin) mockDigitalRead(pin)
 #define digitalWrite(pin, value) mockDigitalWrite(pin, value)
@@ -58,6 +59,7 @@ public:
 #else
 #define analogRead(pin) analogRead(pin)
 #define analogWrite(pin, value) analogWrite(pin, value)
+#define delay(value) delay(value)
 #define delayMicroseconds(value) delayMicroseconds(value)
 #define digitalRead(pin) digitalRead(pin)
 #define digitalWrite(pin, value) digitalWrite(pin, value)
