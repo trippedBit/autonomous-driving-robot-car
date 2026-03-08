@@ -99,4 +99,7 @@ const int DISTANCE_THRESHOLD_MILLIMETER = 300;        // Requirement: https://gi
 const float LEFT_MOTOR_PWM_FACTOR = 1;
 const float RIGHT_MOTOR_PWM_FACTOR = 0.90;
 
+// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/14
+const int timeDirectionMovement = 2000;
+
 #endif // CONFIGURATION_H
