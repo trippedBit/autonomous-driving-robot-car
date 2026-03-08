@@ -12,9 +12,6 @@
 
 #include "src/VERSION.h"
 
-// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/14
-int timeDirectionMovement = 2000;
-
 ChassisMotor rightMotor(ENA_PIN,
                         FORWARD1_PIN,
                         BACKWARD1_PIN,
