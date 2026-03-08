@@ -249,3 +249,32 @@ TEST_CASE("TEST_0010 - resulting PWM is limited to range 0-255 (default factor 0
     REQUIRE_THAT(motor1.setVelocityPWM(2550), Catch::Matchers::WithinAbs(255.0f, 0.001f));
     REQUIRE_THAT(motor1.setVelocityPWM(2551), Catch::Matchers::WithinAbs(255.0f, 0.001f));
 }
+
+TEST_CASE("TEST_0012 - Parameter timeDirectionMovement exists", "[motor_control]")
+{
+    static_assert(std::is_same<decltype(timeDirectionMovement), const int>::value, "timeDirectionMovement is not of type const int");
+}
+
+TEST_CASE("TEST_0013 - Parameter timeDirectionMovement default value", "[motor_control]")
+{
+    REQUIRE(timeDirectionMovement == 2000);
+}
+
+TEST_CASE("TEST_0014 - Random direction and speed for timeDirectionMovement seconds", "[motor_control]")
+{
+    ChassisMotor leftMotor(ENA_PIN,
+                           FORWARD1_PIN,
+                           BACKWARD1_PIN);
+    ChassisMotor rightMotor(ENB_PIN,
+                            FORWARD2_PIN,
+                            BACKWARD2_PIN);
+
+    int directionAngle = 0;
+    int velocityPWM = 0;
+    std::string returnValue = applyRandomDirectionAndSpeed(leftMotor,
+                                                           rightMotor,
+                                                           directionAngle,
+                                                           velocityPWM);
+    REQUIRE(returnValue == "abc");
+    // todo : finalize implementation
+}
