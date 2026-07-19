@@ -18,9 +18,7 @@ public:
     };
     enum MovementDirection
     {
-        INVALID = -2,
-        ERROR = -1,
-        STOP = 0,
+        NO_DIRECTION = 0,
         FORWARD = 1,
         BACKWARD = 2
     };

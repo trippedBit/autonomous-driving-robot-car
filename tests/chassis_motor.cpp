@@ -15,10 +15,10 @@ TEST_CASE("Chassis motor can set movement direction", "[chassis_motor]")
 {
     ChassisMotor motor(5, 6, 7);
 
-    SECTION("Set to STOP")
+    SECTION("Set to NO_DIRECTION")
     {
-        int result = motor.setMovementDirection(ChassisMotor::STOP);
-        REQUIRE(result == ChassisMotor::STOP);
+        int result = motor.setMovementDirection(ChassisMotor::NO_DIRECTION);
+        REQUIRE(result == ChassisMotor::NO_DIRECTION);
     }
 
     SECTION("Set to FORWARD")
@@ -36,7 +36,7 @@ TEST_CASE("Chassis motor can set movement direction", "[chassis_motor]")
     SECTION("Set to invalid direction")
     {
         int result = motor.setMovementDirection(static_cast<ChassisMotor::MovementDirection>(999));
-        REQUIRE(result == -2); // Expect error code for invalid direction
+        REQUIRE(result == ChassisMotor::NO_DIRECTION); // Expect no direction for invalid input
     }
 }
 
@@ -140,7 +140,7 @@ TEST_CASE("Chassis motor set direction after stop - without previous direction",
 {
     ChassisMotor motor(5, 6, 7);
     int result = motor.setMovementDirectionToDirectionBeforeStop();
-    REQUIRE(result == ChassisMotor::INVALID);
+    REQUIRE(result == ChassisMotor::NO_DIRECTION);
 }
 
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/46
@@ -148,18 +148,18 @@ TEST_CASE("Chassis motor set direction after stop - while in stop", "[chassis_mo
 {
     ChassisMotor motor(5, 6, 7);
     int result = motor.setMovementDirectionToDirectionBeforeStop();
-    REQUIRE(result == ChassisMotor::INVALID);
-    motor.setMovementDirection(ChassisMotor::STOP);
+    REQUIRE(result == ChassisMotor::NO_DIRECTION);
+    motor.setMovementDirection(ChassisMotor::FORWARD);
+    motor.setMovementDirection(ChassisMotor::NO_DIRECTION);
     result = motor.setMovementDirectionToDirectionBeforeStop();
-    REQUIRE(result == ChassisMotor::INVALID);
+    REQUIRE(result == ChassisMotor::FORWARD);
 }
 
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/46
 TEST_CASE("Chassis motor set direction after stop - without being in STOP", "[chassis_motor]")
 {
     ChassisMotor motor(5, 6, 7);
+    motor.setMovementDirection(ChassisMotor::FORWARD);
     int result = motor.setMovementDirectionToDirectionBeforeStop();
-    REQUIRE(result == ChassisMotor::INVALID);
-    result = motor.setMovementDirectionToDirectionBeforeStop();
-    REQUIRE(result == ChassisMotor::ERROR);
+    REQUIRE(result == -1);
 }
