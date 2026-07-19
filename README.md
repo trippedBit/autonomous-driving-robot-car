@@ -72,6 +72,10 @@ The following predefined tasks are part of of .vscode/tasks.json:
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/1
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/2
 ```
+- **Code coverage**:
+  - Every code change shall be done within its own feature branch.
+  - Pull requests shall have coverage report(s) attached showing 100% coverage.
+  - Deviations shall be justified.
 
 ## License
 
