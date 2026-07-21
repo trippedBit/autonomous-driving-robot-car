@@ -1,6 +1,6 @@
 **ID**: REQ_0003
 
-**Status**: In specification
+**Status**: Finalized
 
 **Type**: Non-Functional
 
