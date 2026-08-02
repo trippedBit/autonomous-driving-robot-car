@@ -95,6 +95,14 @@ const float DISTANCE_METER_TO_MILLIMETER = 1000.0;    // 1 meter = 1000 millimet
 const float SPEED_OF_SOUND_METER_PER_SECOND = 343.46; // 343,46 m/s at 20°C
 const int DISTANCE_THRESHOLD_MILLIMETER = 300;        // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/46
 
+// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/33
+// todo: fix pin numbers, they are just placeholders
+const int EDGE_SENSOR_TRIGGER_PIN = 95; // IO95 / GPIO95 / Trigger pin of HC-SR04
+const int EDGE_SENSOR_ECHO_PIN = 97;    // IO97 / GPIO97 / Echo pin of HC-SR04
+const float EDGE_DISTANCE_THRESHOLD_MILLIMETER = 100.0;
+const float EDGE_SENSOR_POS_Z_MILLIMETER = 50.0;
+const float EDGE_ANGLE_CATHETE_HYPOTENUSE_DEG = 60.0;
+
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/36
 const float LEFT_MOTOR_PWM_FACTOR = 1;
 const float RIGHT_MOTOR_PWM_FACTOR = 0.90;

@@ -288,6 +288,8 @@ void loop()
 
             obstacleDetection(leftMotor,
                               rightMotor);
+            edgeDetection(leftMotor,
+                          rightMotor);
 
             remainingMillis = timeDirectionMovement - (millis() - millisWhileLoopStart);
         }

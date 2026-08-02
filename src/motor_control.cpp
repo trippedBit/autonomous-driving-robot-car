@@ -93,6 +93,76 @@ std::string applyRandomDirectionAndSpeed(ChassisMotor leftMotor,
            "activeMilliSeconds [ms]: " + std::to_string(activeMilliSeconds);
 }
 
+// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/33
+bool edgeDetection(ChassisMotor leftMotor,
+                   ChassisMotor rightMotor,
+                   int unittestMeasuredDistanceMillimeter)
+{
+    // calculate cathede B length
+    float edgeDistanceCathedeBMillimeter = sqrt(pow(EDGE_DISTANCE_THRESHOLD_MILLIMETER, 2) - pow(EDGE_SENSOR_POS_Z_MILLIMETER, 2));
+
+#ifndef UNIT_TESTING
+    pinMode(EDGE_SENSOR_TRIGGER_PIN, OUTPUT);
+    digitalWrite(EDGE_SENSOR_TRIGGER_PIN, LOW); // Set pin low for a clean start when setting high
+    delayMicroseconds(SENSOR_TRIGGER_PIN_LOW_TIME_MICROSECONDS);
+    digitalWrite(EDGE_SENSOR_TRIGGER_PIN, HIGH);                  // Start trigger
+    delayMicroseconds(SENSOR_TRIGGER_PIN_HIGH_TIME_MICROSECONDS); // Trigger must be high for at least 10 microseconds.
+    digitalWrite(EDGE_SENSOR_TRIGGER_PIN, LOW);
+
+    // Get echo pulse
+    pinMode(EDGE_SENSOR_ECHO_PIN, INPUT);
+    float pulseLengthMicroseconds = pulseIn(EDGE_SENSOR_ECHO_PIN, HIGH);
+    Serial.print("Measured pulse length [µs]: ");
+    Serial.println(pulseLengthMicroseconds);
+
+    // Convert to seconds
+    float pulseLengthSeconds = pulseLengthMicroseconds * PULSE_MICROSECONDS_TO_SECONDS;
+    Serial.print("Measured pulse length [s]: ");
+    Serial.println(pulseLengthSeconds);
+
+    // Calculate distance in meters
+    float distanceMeter = (pulseLengthSeconds / 2) * (SPEED_OF_SOUND_METER_PER_SECOND); // Divided by two because pulse needs to travel to obstacle and back.
+    Serial.print("Measured distance [m]: ");
+    Serial.println(distanceMeter);
+
+    // Convert to millimeters
+    float distanceMillimeter = distanceMeter * DISTANCE_METER_TO_MILLIMETER;
+    Serial.print("Measured distance [mm]: ");
+    Serial.println(distanceMillimeter);
+#else
+    float distanceMillimeter = 0.0;
+    if (unittestMeasuredDistanceMillimeter != 0)
+    {
+        distanceMillimeter = unittestMeasuredDistanceMillimeter;
+    }
+#endif // UNIT_TESTING
+
+    // Stop motors in case of an edge
+    // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/33
+    if (distanceMillimeter > edgeDistanceCathedeBMillimeter)
+    {
+#ifndef UNIT_TESTING
+        Serial.println("Edge detected, stopping motors");
+        digitalWrite(LED, HIGH);
+        leftMotor.setMovementDirection(ChassisMotor::STOP);
+        rightMotor.setMovementDirection(ChassisMotor::STOP);
+#endif // UNIT_TESTING
+
+        return true;
+    }
+    else
+    {
+#ifndef UNIT_TESTING
+        Serial.println("No edge detected, reactivating motors");
+        digitalWrite(LED, LOW);
+        leftMotor.setMovementDirectionToDirectionBeforeStop();
+        rightMotor.setMovementDirectionToDirectionBeforeStop();
+#endif // UNIT_TESTING
+    }
+
+    return false;
+}
+
 // Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/46
 bool obstacleDetection(ChassisMotor leftMotor,
                        ChassisMotor rightMotor,
