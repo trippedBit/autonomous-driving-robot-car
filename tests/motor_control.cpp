@@ -73,3 +73,59 @@ TEST_CASE("Obstacle detection", "[motor_control]")
         REQUIRE(returnValue == false);
     }
 }
+
+// Requirement: https://github.com/trippedBit/autonomous-driving-robot-car/issues/33
+TEST_CASE("Edge detection", "[motor_control]")
+{
+    ChassisMotor leftMotor(1, 2, 3);
+    ChassisMotor rightMotor(4, 5, 6);
+
+    float edgeDistanceCathedeBMillimeter = sqrt(pow(EDGE_DISTANCE_THRESHOLD_MILLIMETER, 2) - pow(EDGE_SENSOR_POS_Z_MILLIMETER, 2));
+
+    SECTION("Distance below edge threshold - default unittest value")
+    {
+        bool returnValue = edgeDetection(leftMotor,
+                                         rightMotor);
+        REQUIRE(returnValue == false);
+    }
+
+    SECTION("Distance below edge threshold - edgeDistanceCathedeBMillimeter - 1")
+    {
+        bool returnValue = edgeDetection(leftMotor,
+                                         rightMotor,
+                                         edgeDistanceCathedeBMillimeter - 1);
+        REQUIRE(returnValue == false);
+    }
+
+    SECTION("Distance below edge threshold - 0mm")
+    {
+        bool returnValue = edgeDetection(leftMotor,
+                                         rightMotor,
+                                         0);
+        REQUIRE(returnValue == false);
+    }
+
+    SECTION("Distance below edge threshold - -1mm")
+    {
+        bool returnValue = edgeDetection(leftMotor,
+                                         rightMotor,
+                                         -1);
+        REQUIRE(returnValue == false);
+    }
+
+    SECTION("Distance at edge threshold - edgeDistanceCathedeBMillimeter")
+    {
+        bool returnValue = edgeDetection(leftMotor,
+                                         rightMotor,
+                                         edgeDistanceCathedeBMillimeter);
+        REQUIRE(returnValue == false);
+    }
+
+    SECTION("Distance above edge threshold - edgeDistanceCathedeBMillimeter + 1")
+    {
+        bool returnValue = edgeDetection(leftMotor,
+                                         rightMotor,
+                                         edgeDistanceCathedeBMillimeter + 1);
+        REQUIRE(returnValue == true);
+    }
+}
